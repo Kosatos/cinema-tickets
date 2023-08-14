@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Вход в админ панель</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    <!-- Bootstrap CSS-->
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        {{ encore_entry_link_tags('admin') }}
+    {% endblock %}
+</head>
+<body>
+<div class="page login-page">
+    <div class="container">
+        <div class="form-outer text-center d-flex align-items-center">
+            <div class="form-inner">
+                <div class="logo text-uppercase"><strong class="text-primary">Вход в админ панель только для
+                        администраторов.</strong>
+                </div>
+
+                <form method="post" class="text-left form-validate">
+                    {% if error %}
+                        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+
+                    {% if app.user %}
+                        <div class="mb-3">
+                            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group-material">
+                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                               class="input-material" autocomplete="email" required autofocus>
+                        <label for="inputEmail" class="label-material">Email</label>
+                    </div>
+
+                    <div class="form-group-material">
+                        <input type="password" name="password" id="inputPassword" class="input-material"
+                               autocomplete="current-password" required>
+                        <label for="inputPassword" class="label-material">Пароль</label>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary" type="submit">
+                            Вход
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

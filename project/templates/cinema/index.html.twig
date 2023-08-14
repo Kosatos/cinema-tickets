@@ -1,0 +1,32 @@
+{# @var cinema App\Entity\Cinema #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Афиша{% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper {
+            margin: 1em auto;
+            max-width: 800px;
+            width: 95%;
+            font: 18px/1.5 sans-serif;
+        }
+
+        .example-wrapper code {
+            background: #F5F5F5;
+            padding: 2px 6px;
+        }
+    </style>
+
+    <div class="example-wrapper">
+        <h1>Афиша</h1>
+        <strong>Фильмы:</strong>
+        <ul>
+            {% for cinema in films %}
+                <li>
+                    <td><a href="{{ path('app_show_cinema', {slug: cinema.slug} ) }}">{{ cinema.name }}</a></td>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

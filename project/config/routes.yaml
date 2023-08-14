@@ -1,0 +1,8 @@
+controllers:
+    resource: ../src/Controller/
+    type: annotation
+
+#TODO: разобраться может инструкция ниже не нужна
+kernel:
+    resource: ../src/Kernel.php
+    type: annotation

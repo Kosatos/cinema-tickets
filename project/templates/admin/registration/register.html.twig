@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Регистрация</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="all,follow">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        {{ encore_entry_link_tags('admin') }}
+    {% endblock %}
+</head>
+<body>
+<div class="page login-page">
+    <div class="container">
+        <div class="form-outer text-center d-flex align-items-center">
+            <div class="form-inner">
+                <div class="logo text-uppercase"><strong class="text-primary">ЛПА</strong></div>
+                <p>Зарегистрируйтесь и запросите административный доступ, чтобы редактировать информацию на сайте.</p>
+                {% for flashError in app.flashes('verify_email_error') %}
+                    <div class="alert alert-danger" role="alert">{{ flashError }}</div>
+                {% endfor %}
+                {{ form_start(registrationForm, {
+                    'attr': {
+                        'class': 'text-left form-validate'
+                    }
+                }) }}
+
+                <div class="form-group-material">
+                    {{ form_widget(registrationForm.email, {
+                        'attr': {
+                            'class': 'input-material'
+                        }
+                    }) }}
+                    {{ form_label(registrationForm.email, 'Email', {
+                        'label_attr': {
+                            'class': 'label-material'
+                        }
+                    }) }}
+                </div>
+
+                <div class="form-group-material">
+                    {{ form_widget(registrationForm.plainPassword, {
+                        'attr': {
+                            'class': 'input-material'
+                        }
+                    }) }}
+                    {{ form_label(registrationForm.plainPassword, 'Пароль', {
+                        'label_attr': {
+                            'class': 'label-material'
+                        }
+                    }) }}
+                </div>
+
+                {{ form_row(registrationForm.agreeTerms , {
+                    label: 'Cогласен на обработку данных',
+                    class: 'form-group-material',
+                    label_attr: { class: 'label-material', style: 'color: #aaa' }
+                }) }}
+                <div class="form-group text-center">
+                    <button id="register" type="submit" value="Register" class="btn btn-primary">Зарегистрироваться</button>
+                </div>
+                {{ form_end(registrationForm) }}
+                <small>У вас уже есть аккаунт? </small><a href="{{ path('app_login') }}" class="signup">Войти</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- JavaScript files-->
+{% block javascripts %}
+    {{ encore_entry_script_tags('admin') }}
+{% endblock %}
+</body>
+</html>

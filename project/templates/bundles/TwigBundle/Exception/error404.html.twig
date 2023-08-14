@@ -1,0 +1,10 @@
+{# templates/bundles/TwigBundle/Exception/error404.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Страница 404</h1>
+
+    <p>
+        Запрашиваемая страница не найдена.<a href="{{ path('homepage') }}">Вернуться на главную</a>.
+    </p>
+{% endblock %}
