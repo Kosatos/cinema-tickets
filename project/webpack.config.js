@@ -1,4 +1,6 @@
 const Encore = require('@symfony/webpack-encore');
+const SpritePlugin = require('svg-sprite-loader/plugin');
+const path = require('path');
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -11,7 +13,7 @@ Encore
     .setOutputPath('public/build/')
     // public path used by the web server to access the output path
     .setPublicPath('/build')
-    // only needed for CDN's or sub-directory deploy
+    // only needed for CDN's or subdirectory deploy
     //.setManifestKeyPrefix('build/')
 
     /*
@@ -21,13 +23,13 @@ Encore
      * and one CSS file (e.g. app.css) if your JavaScript imports CSS.
      */
     .addEntry('app', './assets/app.js')
-    .addEntry('admin', './assets/admin.js')
-
-    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
-    .enableStimulusBridge('./assets/controllers.json')
+    // .addEntry('admin', './assets/admin.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
+
+    // enables the Symfony UX Stimulus bridge (used in assets/bootstrap.js)
+    .enableStimulusBridge('./assets/controllers.json')
 
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
@@ -46,31 +48,90 @@ Encore
     // enables hashed filenames (e.g. app.abc123.css)
     .enableVersioning(Encore.isProduction())
 
-    .configureBabel((config) => {
-        config.plugins.push('@babel/plugin-proposal-class-properties');
-    })
+    // configure Babel
+    // .configureBabel((config) => {
+    //     config.plugins.push('@babel/a-babel-plugin');
+    // })
 
-    // enables @babel/preset-env polyfills
+    // enables and configure @babel/preset-env polyfills
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = 'usage';
-        config.corejs = 3;
+        config.corejs = '3.23';
+        config.debug = true;
     })
 
     // enables Sass/SCSS support
     .enableSassLoader()
 
-    // uncomment if you use TypeScript
-    //.enableTypeScriptLoader()
+    .configureLoaderRule('images', (loaderRule) => {
+        loaderRule.exclude = [
+            path.resolve(__dirname, 'assets/app/src/images/svg')
+        ]; // new line
+    })
 
-    // uncomment if you use React
-    //.enableReactPreset()
+    .addLoader({
+        test: /\.(svg)$/,
+        include: [
+            path.resolve(__dirname, 'assets/app/src/images/svg'),
+        ],
+        use: [
+            {
+                loader: 'svg-sprite-loader', options: {
+                    exclude: path.resolve(__dirname, 'assets/app/src/images/svg'),
+                    extract: true,
+                    publicPath: 'images/svg/',
+                    spriteFilename: svgPath => [path.basename(path.dirname(svgPath)), '[hash]', 'svg'].join('.')
+                }
+            },
+            {
+                loader: 'svgo-loader',
+                options: {
+                    configFile: false,
+                    plugins: [
+                        {
+                            name: 'removeAttrs',
+                            params: {
+                                attrs: "(fill|stroke)"
+                            }
+                        }
+                    ],
+                    name: 'images/[name].[ext]',
+                    publicPath: 'images/svg/'
+                }
+            }
+        ]
+    })
 
-    // uncomment to get integrity="..." attributes on your script & link tags
-    // requires WebpackEncoreBundle 1.4 or higher
-    //.enableIntegrityHashes(Encore.isProduction())
+    .addPlugin(new SpritePlugin({
+        plainSprite: true,
+        plugins : [
+            {
+                name: 'removeAttrs',
+                params: {
+                    attrs: "(fill|stroke)"
+                }
+            }
+        ],
+        spriteAttrs: {
+            id:'',
+            fill: '',
+            stroke: '',
+        }
+    }))
 
-    // uncomment if you're having problems with a jQuery plugin
-    //.autoProvidejQuery()
+
+// uncomment if you use TypeScript
+//.enableTypeScriptLoader()
+
+// uncomment if you use React
+//.enableReactPreset()
+
+// uncomment to get integrity="..." attributes on your script & link tags
+// requires WebpackEncoreBundle 1.4 or higher
+//.enableIntegrityHashes(Encore.isProduction())
+
+// uncomment if you're having problems with a jQuery plugin
+//.autoProvidejQuery()
 ;
 
 module.exports = Encore.getWebpackConfig();
