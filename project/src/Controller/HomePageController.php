@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\CinemaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -9,10 +10,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomePageController extends AbstractController
 {
     #[Route('/', name: 'homepage')]
-    public function index(): Response
+    public function index(CinemaRepository $cinemaRepository): Response
     {
-        return $this->render('pages/home.html.twig', [
-            'controller_name' => 'HomePageController',
-        ]);
+        $films = $cinemaRepository->findAll();
+
+        return $this->render('pages/home.html.twig', compact('films'));
     }
 }

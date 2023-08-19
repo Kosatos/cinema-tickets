@@ -1,0 +1,5 @@
+{# @var media \App\Entity\Media #}
+
+<img class="{{ class }}"
+     src="{{ vich_uploader_asset(image, 'imageFile') | imagine_filter_cache(filter_cache) }}"
+     alt="{{ image_alt }}">

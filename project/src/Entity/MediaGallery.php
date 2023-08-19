@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Trait\HasMediaInterface;
 use App\Entity\Trait\HasMediaTrait;
 use App\Repository\MediaGalleryRepository;
 use Doctrine\ORM\Mapping as ORM;

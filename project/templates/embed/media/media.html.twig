@@ -1,0 +1,15 @@
+{# @var media \App\Entity\Media #}
+
+{% if media.mimeType == 'video/mp4' %}
+    {% include 'embed/media/video.html.twig' with {
+        video: media,
+        class: class
+    } %}
+{% else %}
+    {% include 'embed/media/image.html.twig' with {
+        image: media,
+        filter_cache: filter_cache,
+        image_alt: image_alt | default('картинка не установлена'),
+        class: class
+    } %}
+{% endif %}
