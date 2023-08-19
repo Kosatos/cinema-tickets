@@ -37,10 +37,14 @@ class Cinema
     #[ORM\ManyToMany(targetEntity: Country::class, inversedBy: 'cinemas', cascade: ['persist'])]
     private ?Collection $countries;
 
+    #[ORM\OneToMany(mappedBy: 'cinema', targetEntity: Session::class, cascade: ['persist'])]
+    private ?Collection $sessions;
+
     public function __construct()
     {
         $this->gallery = new ArrayCollection();
         $this->countries = new ArrayCollection();
+        $this->sessions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +150,36 @@ class Cinema
     public function removeCountry(Country $country): self
     {
         $this->countries->removeElement($country);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Session>
+     */
+    public function getSessions(): Collection
+    {
+        return $this->sessions;
+    }
+
+    public function addSession(Session $session): self
+    {
+        if (!$this->sessions->contains($session)) {
+            $this->sessions[] = $session;
+            $session->setCinema($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSession(Session $session): self
+    {
+        if ($this->sessions->removeElement($session)) {
+            // set the owning side to null (unless already changed)
+            if ($session->getCinema() === $this) {
+                $session->setCinema(null);
+            }
+        }
 
         return $this;
     }

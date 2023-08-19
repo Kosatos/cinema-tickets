@@ -5,6 +5,8 @@ namespace App\Controller\Admin;
 use App\Entity\Admin;
 use App\Entity\Cinema;
 use App\Entity\Country;
+use App\Entity\Hall;
+use App\Entity\Session;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -50,5 +52,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('кинозал');
         yield MenuItem::linkToCrud('Кино', 'fas fa-video', Cinema::class);
         yield MenuItem::linkToCrud('Страна', 'fas fa-globe', Country::class);
+        yield MenuItem::linkToCrud('Зал', 'fas fa-dungeon', Hall::class);
+        yield MenuItem::linkToCrud('Сеанс', 'fas fa-film', Session::class);
     }
 }
