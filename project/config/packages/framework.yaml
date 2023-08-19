@@ -16,7 +16,7 @@ framework:
     #fragments: true
     php_errors:
         log: true
-    ide: 'phpstorm://open?file=%%f&line=%%l&/project/>/home/prog/projects/cinema-club/project/'
+    ide: 'phpstorm://open?file=%%f&line=%%l&/project/>/home/novapc/projects/cinema-tickets/project/'
 
 when@test:
     framework:
