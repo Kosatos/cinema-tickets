@@ -1,0 +1,13 @@
+{% if  attribute(entity.instance, field.property) is defined %}
+    {% set gallery = attribute(entity.instance, field.property) %}
+{% else %}
+    {% set gallery = entity.instance.gallery %}
+{% endif %}
+
+
+{% for item in gallery %}
+    {% if item.image is not null %}
+        <img src="{{ vich_uploader_asset(item.image, 'imageFile') | imagine_filter_cache('admin_thumbnail') }}"
+             alt="{{ item.image.mimeType }}">
+    {% endif %}
+{% endfor %}

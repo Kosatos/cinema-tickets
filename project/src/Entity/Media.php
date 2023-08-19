@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\HasMediaInterface;
+use App\Entity\Trait\HasMediaTrait;
 use DateTimeImmutable;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;

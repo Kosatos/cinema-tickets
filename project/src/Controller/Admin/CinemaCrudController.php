@@ -3,14 +3,18 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Cinema;
+use App\Entity\MediaGallery;
+use App\Form\Admin\MediaGalleryType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use IntlDateFormatter;
+use function Symfony\Component\String\s;
 
 class CinemaCrudController extends AbstractCrudController
 {
@@ -32,6 +36,7 @@ class CinemaCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            FormField::addTab('Основное'),
             TextField::new('name', 'Название фильма')
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
@@ -42,6 +47,7 @@ class CinemaCrudController extends AbstractCrudController
                 ->setTextAlign('center')
                 ->onlyOnForms()
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+                ->setHelp('Редактируемое поле. Необходимо для формирования корректных ссылок.')
             ,
             FormField::addRow(),
             TextareaField::new('description', 'Описание')
@@ -49,7 +55,8 @@ class CinemaCrudController extends AbstractCrudController
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
             ,
             FormField::addRow(),
-            TextField::new('playbackTime', 'Длительность сеанса')
+            TextField::new('playbackTime', 'Продолжительность')
+                ->formatValue(fn($value) => date('h:i', strtotime($value)))
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                 ->setHelp('Введите время проигрывания в формате <strong style="color: #7c2d12">HH:MM:SS</strong>')
@@ -59,8 +66,18 @@ class CinemaCrudController extends AbstractCrudController
                 ->autocomplete()
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
-            ->setTemplatePath('admin/crud/assoc_relations.html.twig')
+                ->setTemplatePath('admin/crud/assoc_relations.html.twig')
             ,
+            FormField::addTab('Галерея'),
+            CollectionField::new('gallery', 'картинки')
+                ->setTextAlign('center')
+                ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+                ->setEntryType(MediaGalleryType::class)
+                ->setFormTypeOptions([
+                    'error_bubbling' => false,
+                ])
+                ->renderExpanded()
+            ->setTemplatePath('admin/crud/assoc_gallery.html.twig')
         ];
     }
 }

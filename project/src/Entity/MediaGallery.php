@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use App\Entity\Trait\HasMediaInterface;
+use App\Entity\Trait\HasMediaTrait;
 use App\Repository\MediaGalleryRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MediaGalleryRepository::class)]
 class MediaGallery
 {
+    use HasMediaTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -67,4 +71,18 @@ class MediaGallery
 
         return $this;
     }
+
+    //    Виртуальное свойство для EasyAdmin для загрузки новых изображений
+    public function getNewImage(): ?Media
+    {
+        return $this->image;
+    }
+
+    public function setNewImage(?Media $input_img): self
+    {
+        $this->uploadNewMedia($input_img, 'image');
+
+        return $this;
+    }
+
 }
