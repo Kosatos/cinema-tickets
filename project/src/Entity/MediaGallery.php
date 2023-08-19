@@ -19,6 +19,9 @@ class MediaGallery
     #[ORM\ManyToOne(targetEntity: Media::class, cascade: ['persist'])]
     private ?Media $image = null;
 
+    #[ORM\ManyToOne(targetEntity: Cinema::class, cascade: ['persist'], inversedBy: 'gallery')]
+    private ?Cinema $cinema;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -49,6 +52,18 @@ class MediaGallery
     public function setImage(?Media $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getCinema(): ?Cinema
+    {
+        return $this->cinema;
+    }
+
+    public function setCinema(?Cinema $cinema): self
+    {
+        $this->cinema = $cinema;
 
         return $this;
     }

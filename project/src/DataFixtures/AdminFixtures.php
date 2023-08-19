@@ -6,9 +6,8 @@ use App\Entity\Admin;
 
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-//use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class AdminFixtures extends BaseFixture /* implements DependentFixtureInterface */
+class AdminFixtures extends BaseFixture
 {
 	public function __construct(private readonly UserPasswordHasherInterface $passwordEncoder)
 	{
@@ -29,11 +28,4 @@ class AdminFixtures extends BaseFixture /* implements DependentFixtureInterface 
 			$manager->flush();
 		}
 	}
-
-//	public function getDependencies(): array
-//	{
-//		return [
-//			BaseFixture::class,
-//		];
-//	}
 }

@@ -5,8 +5,10 @@ namespace App\Controller\Admin;
 use App\Entity\Cinema;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use IntlDateFormatter;
 
@@ -42,10 +44,22 @@ class CinemaCrudController extends AbstractCrudController
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
             ,
             FormField::addRow(),
+            TextareaField::new('description', 'Описание')
+                ->setTextAlign('center')
+                ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+            ,
+            FormField::addRow(),
             TextField::new('playbackTime', 'Длительность сеанса')
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                 ->setHelp('Введите время проигрывания в формате <strong style="color: #7c2d12">HH:MM:SS</strong>')
+            ,
+            FormField::addRow(),
+            AssociationField::new('countries', 'Страны')
+                ->autocomplete()
+                ->setTextAlign('center')
+                ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+            ->setTemplatePath('admin/crud/assoc_relations.html.twig')
             ,
         ];
     }
