@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SessionRepository::class)]
@@ -36,6 +37,49 @@ class Session
 
     #[ORM\ManyToOne(targetEntity: Cinema::class, cascade: ['persist'], inversedBy: 'sessions')]
     private ?Cinema $cinema;
+
+    private const SCHEMA_A = 'schema A';
+    private const SCHEMA_B = 'schema B';
+    private const SCHEMA_C = 'schema C';
+    private const SESSION_SCHEMA = [
+        'schema A' => [
+            '10:00:00',
+            '12:00:00',
+            '14:00:00',
+            '16:00:00',
+            '18:00:00',
+            '20:00:00',
+        ],
+        'schema B' => [
+            '10:00:00',
+            '11:30:00',
+            '13:00:00',
+            '14:30:00',
+            '16:00:00',
+            '17:30:00',
+            '19:00:00',
+        ],
+        'schema C' => [
+            '10:00:00',
+            '13:00:00',
+            '16:00:00',
+            '19:30:00',
+        ],
+    ];
+
+    #[ArrayShape([
+        'схема A' => 'string',
+        'схема B' => 'string',
+        'схема C' => 'string',
+    ])]
+    public static function getAvailavleSchemaName(): array
+    {
+        return [
+            'схема A' => self::SCHEMA_A,
+            'схема B' => self::SCHEMA_B,
+            'схема C' => self::SCHEMA_C,
+        ];
+    }
 
     public function __construct()
     {
@@ -144,6 +188,29 @@ class Session
     public function setCinema(?Cinema $cinema): self
     {
         $this->cinema = $cinema;
+
+        return $this;
+    }
+
+    public ?string $schema = null;
+
+    public function getSchema(): ?string
+    {
+        return $this->schema;
+    }
+    public function setSchema(?string $sessionScheema): self
+    {
+        if (key_exists($sessionScheema, self::SESSION_SCHEMA)) {
+            array_map(function ($time) {
+                $newSession = new Session();
+                $newSession->setStartedAt($time);
+
+                $this->addSession($newSession);
+
+            }, self::SESSION_SCHEMA[$sessionScheema]);
+
+            return $this;
+        }
 
         return $this;
     }

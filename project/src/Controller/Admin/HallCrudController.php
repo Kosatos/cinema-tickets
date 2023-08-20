@@ -41,9 +41,7 @@ class HallCrudController extends AbstractCrudController
     {
         return $crud
             ->setEntityLabelInPlural('Залы')
-            ->setEntityLabelInSingular(fn(?Hall $hall) => $hall?->getNumber() ?: 'Зал')
-            ->setPageTitle(CRUD::PAGE_EDIT, fn(?Hall $hall) => "Редактировать зал номер: {$hall->getNumber()}")
-            ->setPageTitle(CRUD::PAGE_NEW, "Зал")
+            ->setEntityLabelInSingular('Зал')
             ->setDefaultSort(['number' => 'ASC']);
     }
 
@@ -108,6 +106,7 @@ class HallCrudController extends AbstractCrudController
             IntegerField::new('number', 'Номер зала')
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+                ->setHelp('Укажите номер зала.')
             ,
 //            FormField::addRow(),
 //            CollectionField::new('sessions', 'Сеансы')

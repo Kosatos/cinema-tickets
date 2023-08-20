@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
@@ -29,7 +30,8 @@ class SessionCrudController extends AbstractCrudController
         return Session::class;
     }
 
-    public function __construct(readonly private RequestStack $requestStack, readonly private AdminUrlGenerator $urlGenerator)
+    public function __construct(readonly private RequestStack      $requestStack,
+                                readonly private AdminUrlGenerator $urlGenerator)
     {
     }
 
@@ -41,7 +43,8 @@ class SessionCrudController extends AbstractCrudController
             ->linkToCrudAction('showHall');
 
         return $actions
-            ->add(Crud::PAGE_INDEX, $showHall);
+            ->add(Crud::PAGE_INDEX, $showHall)
+            ->remove('index', 'new');
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -72,10 +75,10 @@ class SessionCrudController extends AbstractCrudController
         /** @var Session $session */
         $session = $this->getContext()->getEntity()->getInstance();
 
-        if ($session?->getSession() === null) {
+        if ($session && $session->getSession() == null) {
 
             return [
-                DateTimeField::new('data', 'Дата')
+                DateTimeField::new('data', 'Дата 1')
                     ->setFormTypeOptions([
                         'input' => 'datetime_immutable',
                         'widget' => 'single_text',
@@ -84,19 +87,61 @@ class SessionCrudController extends AbstractCrudController
                     ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                     ->setHelp('Установите дату просмотра (день).')
                 ,
+                ChoiceField::new('schema', 'Схема сеансов 1')
+                    ->setChoices(Session::getAvailavleSchemaName())
+                    ->onlyOnForms()
+            ];
+        }
+
+        if ($session?->getSession() != null) {
+
+            return [
+                TextField::new('started_at', 'Начало сеанса 2')
+                    ->setTextAlign('center')
+                    ->setColumns('col-sm-6 col-lg-5 col-xxl-3'),
             ];
         }
 
         return [
             DateTimeField::new('data', 'Дата')
+                ->formatValue(function ($value, $entity) {
+                    if (null == $value) {
+                        $sessionId = $entity->getSession()->getId();
+
+                        $url = $this->urlGenerator->unsetAll()->setController(SessionCrudController::class)
+                            ->setAction(Crud::PAGE_INDEX)
+                            ->set('entity_collection', $sessionId)
+                            ->generateUrl();
+
+                        return '<a href="' . $url . '">Вернуться к дате сеансов</a>';
+                    }
+                    return $entity;
+                })
+                ->setFormTypeOptions([
+                    'input' => 'datetime_immutable',
+                    'widget' => 'single_text',
+                ])
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                 ->setHelp('Установите дату просмотра (день).')
             ,
             TextField::new('started_at', 'Начало сеанса')
+                ->formatValue(function ($value, $entity) {
+                    if (null == $value) {
+                        $idCollection = implode(',', $entity->getSessions()->map(fn(?Session $session) => $session->getId())->toArray());
+
+                        $url = $this->urlGenerator->unsetAll()->setController(SessionCrudController::class)
+                            ->setAction(Crud::PAGE_INDEX)
+                            ->set('entity_collection', $idCollection)
+                            ->generateUrl();
+
+                        return '<a href="' . $url . '">Показать схему</a>';
+                    }
+
+                    return $entity;
+                })
                 ->setTextAlign('center')
-                ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
-            ,
+                ->setColumns('col-sm-6 col-lg-5 col-xxl-3'),
         ];
     }
 
