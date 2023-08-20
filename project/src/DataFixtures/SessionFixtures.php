@@ -15,12 +15,13 @@ class SessionFixtures extends BaseFixture
 
             if ($count < 7) {
                 $data = $data->modify('+' . $count . ' day');
+                $session->setSchema('schema A');
             } else {
                 $data = $data->modify('+' . $count - 7 . ' day');
+                $session->setSchema('schema B');
             }
 
-            $session
-                ->setData($data);
+            $session->setData($data);
         });
 
         $manager->flush();
@@ -29,7 +30,7 @@ class SessionFixtures extends BaseFixture
     public function getDependencies(): array
     {
         return [
-            SessionSchemaFixtures::class,
+            CinemaFixtures::class,
         ];
     }
 }
