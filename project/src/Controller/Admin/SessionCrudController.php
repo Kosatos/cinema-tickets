@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
@@ -78,7 +79,7 @@ class SessionCrudController extends AbstractCrudController
         if ($session && $session->getSession() == null) {
 
             return [
-                DateTimeField::new('data', 'Дата 1')
+                DateTimeField::new('data', 'Дата')
                     ->setFormTypeOptions([
                         'input' => 'datetime_immutable',
                         'widget' => 'single_text',
@@ -87,9 +88,12 @@ class SessionCrudController extends AbstractCrudController
                     ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                     ->setHelp('Установите дату просмотра (день).')
                 ,
-                ChoiceField::new('schema', 'Схема сеансов 1')
+                FormField::addRow(),
+                ChoiceField::new('schema', 'Схема сеансов')
                     ->setChoices(Session::getAvailavleSchemaName())
+                    ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                     ->onlyOnForms()
+                    ->setHelp('Выберете шаблон сеансов')
             ];
         }
 
@@ -106,11 +110,9 @@ class SessionCrudController extends AbstractCrudController
             DateTimeField::new('data', 'Дата')
                 ->formatValue(function ($value, $entity) {
                     if (null == $value) {
-                        $sessionId = $entity->getSession()->getId();
-
                         $url = $this->urlGenerator->unsetAll()->setController(SessionCrudController::class)
                             ->setAction(Crud::PAGE_INDEX)
-                            ->set('entity_collection', $sessionId)
+                            ->set('entity_collection', $entity->getSession()->getId())
                             ->generateUrl();
 
                         return '<a href="' . $url . '">Вернуться к дате сеансов</a>';
@@ -143,6 +145,25 @@ class SessionCrudController extends AbstractCrudController
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3'),
         ];
+    }
+
+    public function getRedirectResponseAfterSave(AdminContext $context, string $action): RedirectResponse
+    {
+        /**@var Session $session */
+        $session = $context->getEntity()->getInstance();
+
+        if ($hall = $session->getHall()) {
+            $sessionId = implode(',', $hall->getSessions()->map(fn(?Session $session) => $session->getId())->toArray());
+
+            $url = $this->urlGenerator->unsetAll()->setController(SessionCrudController::class)
+                ->setAction('index')
+                ->set('entity_collection', $sessionId)
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::getRedirectResponseAfterSave($context, $action);
     }
 
     /**
