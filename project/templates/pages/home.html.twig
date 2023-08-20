@@ -1,5 +1,7 @@
 {# @var cinema \App\Entity\Cinema #}
 {# @var country \App\Entity\Country #}
+{# @var main_session \App\Entity\Session #}
+{# @var session \App\Entity\Session #}
 
 {% extends 'base.html.twig' %}
 
@@ -61,36 +63,19 @@
                     </div>
                 </div>
 
-                <div class="movie-seances__hall">
-                    <h3 class="movie-seances__hall-title">Зал 1</h3>
-                    <ul class="movie-seances__list">
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">10:20</a>
-                        </li>
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">14:10</a>
-                        </li>
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">18:40</a>
-                        </li>
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">22:00</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="movie-seances__hall">
-                    <h3 class="movie-seances__hall-title">Зал 2</h3>
-                    <ul class="movie-seances__list">
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">11:15</a>
-                        </li>
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">14:40</a>
-                        </li>
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">16:00</a>
-                        </li>
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">18:30</a>
-                        </li>
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">21:00</a>
-                        </li>
-                        <li class="movie-seances__time-block"><a class="movie-seances__time" href="hall.html">23:30</a>
-                        </li>
-                    </ul>
-                </div>
+                {% for main_session in cinema.sessions %}
+                    <div class="movie-seances__hall">
+                        <h3 class="movie-seances__hall-title">Зал {{ main_session.hall.number }}</h3>
+                        <ul class="movie-seances__list">
+                            {% for session in main_session.sessions %}
+                                <li class="movie-seances__time-block"><a class="movie-seances__time"
+                                                                         href="{{ path('app_show_cinema', {slug: main_session.cinema.slug}) }}">{{ session.startedAt[:5] }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+
             </section>
 
         {% endfor %}

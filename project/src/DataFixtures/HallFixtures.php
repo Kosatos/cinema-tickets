@@ -35,7 +35,6 @@ class HallFixtures extends BaseFixture implements DependentFixtureInterface
     {
         return [
             SessionFixtures::class,
-            SessionFixtures::class,
         ];
     }
 }

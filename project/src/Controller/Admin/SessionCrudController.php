@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
@@ -93,6 +94,11 @@ class SessionCrudController extends AbstractCrudController
                         ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                         ->setHelp('Установите дату просмотра (день).')
                     ,
+                    FormField::addRow(),
+                    AssociationField::new('cinema', 'Фильм')
+                        ->setTextAlign('center')
+                        ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+                        ->setHelp('Выберите фильм из выпадающего списка.')
                 ];
             }
 
