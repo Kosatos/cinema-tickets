@@ -53,6 +53,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Кино', 'fas fa-video', Cinema::class);
         yield MenuItem::linkToCrud('Страна', 'fas fa-globe', Country::class);
         yield MenuItem::linkToCrud('Зал', 'fas fa-dungeon', Hall::class);
-        yield MenuItem::linkToCrud('Сеанс', 'fas fa-film', Session::class);
+//        yield MenuItem::linkToCrud('Сеанс', 'fas fa-film', Session::class);
     }
 }

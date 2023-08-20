@@ -25,10 +25,10 @@ class Session
     #[ORM\Column(type: 'string', length: 8, nullable: true)]
     private ?string $started_at;
 
-    #[ORM\ManyToOne(targetEntity: self::class, cascade: ['persist'], inversedBy: 'sessions')]
-    private ?self $session;
+    #[ORM\ManyToOne(targetEntity: Session::class, cascade: ['persist'], inversedBy: 'sessions')]
+    private ?Session $session;
 
-    #[ORM\OneToMany(mappedBy: 'session', targetEntity: self::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'session', targetEntity: Session::class, cascade: ['persist', 'remove'])]
     private ?Collection $sessions;
 
     #[ORM\ManyToOne(targetEntity: Hall::class, cascade: ['persist'], inversedBy: 'sessions')]
@@ -44,8 +44,8 @@ class Session
 
     public function __toString(): string
     {
-        if ($this->data) {
-            $dateTime = new DateTime("@{$this->data->getTimeStamp()}");
+        if ($data = $this->data) {
+            $dateTime = new DateTime("@{$data->getTimeStamp()}");
 
             return $dateTime->format('d:m:Y');
         }
@@ -63,7 +63,7 @@ class Session
         return $this->data;
     }
 
-    public function setData(DateTimeImmutable $data): self
+    public function setData(?DateTimeImmutable $data): self
     {
         $this->data = $data;
 
@@ -95,14 +95,14 @@ class Session
     }
 
     /**
-     * @return Collection<int, self>
+     * @return Collection|null
      */
-    public function getSessions(): Collection
+    public function getSessions(): ?Collection
     {
         return $this->sessions;
     }
 
-    public function addSession(self $session): self
+    public function addSession(?self $session): self
     {
         if (!$this->sessions->contains($session)) {
             $this->sessions[] = $session;
