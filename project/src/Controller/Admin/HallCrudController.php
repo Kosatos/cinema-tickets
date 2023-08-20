@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
@@ -108,18 +109,33 @@ class HallCrudController extends AbstractCrudController
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                 ->setHelp('Укажите номер зала.')
             ,
-//            FormField::addRow(),
-//            CollectionField::new('sessions', 'Сеансы')
-//                ->setTextAlign('center')
-//                ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
-//                ->setEntryType(SessionParentType::class)
-//                ->setFormTypeOptions([
-//                    'by_reference' => false,
-//                    'mapped' => true
-//                ])
-//                ->renderExpanded()
-//                ->setTemplatePath('admin/crud/assoc_relations.html.twig')
-//            ,
+            CollectionField::new('sessions', 'Даты сеансов')
+                ->onlyOnIndex()
+                ->setTextAlign('center')
+                ->formatValue(function ($value, $entity) {
+                    if (!$value) {
+                        $session = new Session();
+                        $session->setData(new DateTimeImmutable());
+
+                        /**@var Hall $entity */
+                        $entity->addSession($session);
+
+                        $em = $this->managerRegistry->getManager();
+
+                        $em->persist($session);
+                        $em->flush();
+
+                        $url = $this->urlGenerator->unsetAll()
+                            ->setController(SessionCrudController::class)
+                            ->setEntityId($session->getId())
+                            ->setAction(Crud::PAGE_EDIT)
+                            ->generateUrl();
+                        return '<a href="'.$url.'">Добавить дату</a>';
+                    }
+
+                    return $value;
+                })
+
         ];
     }
 

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Session;
+use DateTimeImmutable;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -21,8 +22,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\Callback;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class SessionCrudController extends AbstractCrudController
 {
@@ -78,6 +82,20 @@ class SessionCrudController extends AbstractCrudController
 
         if ($session && $session->getSession() == null) {
 
+            if ($session->getSessions()->count() > 0) {
+                return [
+                    DateTimeField::new('data', 'Дата')
+                        ->setFormTypeOptions([
+                            'input' => 'datetime_immutable',
+                            'widget' => 'single_text',
+                        ])
+                        ->setTextAlign('center')
+                        ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+                        ->setHelp('Установите дату просмотра (день).')
+                    ,
+                ];
+            }
+
             return [
                 DateTimeField::new('data', 'Дата')
                     ->setFormTypeOptions([
@@ -100,7 +118,7 @@ class SessionCrudController extends AbstractCrudController
         if ($session?->getSession() != null) {
 
             return [
-                TextField::new('started_at', 'Начало сеанса 2')
+                TextField::new('started_at', 'Начало сеанса')
                     ->setTextAlign('center')
                     ->setColumns('col-sm-6 col-lg-5 col-xxl-3'),
             ];
@@ -137,7 +155,7 @@ class SessionCrudController extends AbstractCrudController
                             ->set('entity_collection', $idCollection)
                             ->generateUrl();
 
-                        return '<a href="' . $url . '">Показать схему</a>';
+                        return '<a href="' . $url . '">Показать расписание</a>';
                     }
 
                     return $entity;
