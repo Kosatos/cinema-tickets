@@ -12,6 +12,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SessionRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Session
 {
     #[ORM\Id]
@@ -109,6 +110,10 @@ class Session
 
     public function setData(?DateTimeImmutable $data): self
     {
+        if ($data instanceof DateTimeImmutable) {
+            $data = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "{$data->format('Y-m-d')} 00:01:00");
+        }
+
         $this->data = $data;
 
         return $this;
@@ -198,6 +203,7 @@ class Session
     {
         return $this->schema;
     }
+
     public function setSchema(?string $sessionScheema): self
     {
         if (key_exists($sessionScheema, self::SESSION_SCHEMA)) {
