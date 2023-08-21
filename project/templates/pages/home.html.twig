@@ -66,6 +66,7 @@
                 {% for main_session in cinema.sessions %}
                     <div class="movie-seances__hall">
                         <h3 class="movie-seances__hall-title">Зал {{ main_session.hall.number }}</h3>
+                        <h3 class="movie-seances__hall-title">Дата: {{ main_session.data | format_datetime('full', 'none', locale='ru') }}</h3>
                         <ul class="movie-seances__list">
                             {% for session in main_session.sessions %}
                                 <li class="movie-seances__time-block"><a class="movie-seances__time"
