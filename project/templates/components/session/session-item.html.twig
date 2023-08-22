@@ -1,0 +1,43 @@
+<section class="movie">
+    <div class="movie__info">
+        <div class="movie__poster">
+            {% if session.cinema.gallery | length > 0 %}
+                {% set galleryItem = session.cinema.gallery %}
+                {% include 'embed/media/media.html.twig' with {
+                    media: galleryItem.image,
+                    filter_cache: 'middle_banner',
+                    image_alt: session.cinema.name,
+                    class: 'movie__poster-image'
+                } %}
+            {% else %}
+                <img class="movie__poster-image" alt="{{ session.cinema.name }}"
+                     src="{{ asset('build/images/default-film-image.jpg') }}">
+            {% endif %}
+        </div>
+        <div class="movie__description">
+            <h2 class="movie__title">{{ session.cinema.name }}</h2>
+            <p class="movie__synopsis">{{ session.cinema.description }}</p>
+            <p class="movie__data">
+                <span class="movie__data-duration">{{ film_interval(session.cinema.playbackTime) }}</span>
+                {% for country in session.cinema.countries %}
+                    <span class="movie__data-origin">{{ country.name }}</span>
+                {% endfor %}
+            </p>
+        </div>
+    </div>
+
+    <div class="movie-seances__hall">
+        <h3 class="movie-seances__hall-title">Зал {{ session.hall.number }}</h3>
+        <ul class="movie-seances__list">
+            {% for session in session.sessions %}
+                <li class="movie-seances__time-block">
+                    <a class="movie-seances__time"
+                       href="{{ path('app_show_cinema', {slug: session.session.cinema.slug}) }}">
+                        {{ session.startedAt[:5] }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+</section>
