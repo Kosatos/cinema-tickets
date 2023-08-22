@@ -6,7 +6,7 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+import './app/src/scss/main.scss';
 
 // start the Stimulus application
 import './bootstrap';
@@ -16,3 +16,5 @@ function requireAll(r) {
 }
 // Переносим всв SVG из /app/src/static/img в /public/build
 requireAll(require.context('./app/src/images', true, /\.png|jpg|gif|svg$/));
+
+import './app/src/js/main'
