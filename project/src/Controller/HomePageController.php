@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use DateTimeImmutable;
-use App\Repository\CinemaRepository;
 use App\Repository\SessionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,11 +10,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomePageController extends AbstractController
 {
-	#[Route('/', name: 'homepage')]
-	public function index(SessionRepository $sessionRepository): Response
+	#[Route('/{data}', name: 'homepage')]
+	public function index(SessionRepository $sessionRepository, $data = null): Response
 	{
-		$data = new DateTimeImmutable();
-		$sessionData = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "{$data->format('Y-m-d')} 00:01:00");
+		if ($data) {
+			$dataFormat = "{$data} 00:01:00";
+		} else {
+			$data = new DateTimeImmutable();
+			$dataFormat = "{$data->format('Y-m-d')} 00:01:00";
+		}
+
+		$sessionData =  DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dataFormat);
 
 		$mainSessions = $sessionRepository->findBy(['data' => $sessionData]);
 
