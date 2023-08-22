@@ -33,8 +33,8 @@
 {% block body %}
 
     <main>
-        {% if mainSessions | length > 0 %}
-            {% include 'components/session/sessions-list.html.twig' with { sessions: mainSessions } %}
+        {% if sessions | length > 0 %}
+            {% include 'components/session/sessions-list.html.twig' with { sessions: sessions } %}
         {% endif %}
     </main>
 

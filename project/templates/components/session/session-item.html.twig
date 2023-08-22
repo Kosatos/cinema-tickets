@@ -29,11 +29,11 @@
     <div class="movie-seances__hall">
         <h3 class="movie-seances__hall-title">Зал {{ session.hall.number }}</h3>
         <ul class="movie-seances__list">
-            {% for session in session.sessions %}
+            {% for session in sessions %}
                 <li class="movie-seances__time-block">
                     <a class="movie-seances__time"
-                       href="{{ path('app_show_cinema', {slug: session.session.cinema.slug}) }}">
-                        {{ session.startedAt[:5] }}
+                       href="{{ path('app_show_cinema', {slug: session.cinema.slug}) }}">
+                        {{ session.data|date('H:s') }}
                     </a>
                 </li>
             {% endfor %}

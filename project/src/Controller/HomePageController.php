@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Session;
 use DateTimeImmutable;
 use App\Repository\SessionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,20 +11,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomePageController extends AbstractController
 {
-	#[Route('/{data}', name: 'homepage')]
-	public function index(SessionRepository $sessionRepository, $data = null): Response
-	{
-		if ($data) {
-			$dataFormat = "{$data} 00:01:00";
-		} else {
-			$data = new DateTimeImmutable();
-			$dataFormat = "{$data->format('Y-m-d')} 00:01:00";
-		}
+    #[Route('/session/{data}', name: 'homepage')]
+    public function index(SessionRepository $sessionRepository, $data = null): Response
+    {
+        $sessionsAll = $sessionRepository->findAll();
 
-		$sessionData =  DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dataFormat);
+        if (null == $data) {
+            $data = (new DateTimeImmutable())->format('Y-m-d');
+        }
 
-		$mainSessions = $sessionRepository->findBy(['data' => $sessionData]);
+        $sessions = array_filter($sessionsAll, function (Session $session) use ($data) {
+            return $session->getData()->format('Y-m-d') === $data;
+        });
 
-		return $this->render('pages/home.html.twig', compact('mainSessions'));
-	}
+        return $this->render('pages/home.html.twig', compact('sessions'));
+    }
 }

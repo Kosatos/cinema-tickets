@@ -58,8 +58,9 @@ class HallCrudController extends AbstractCrudController
             ->linkToCrudAction('showMainSessions');
 
         return $actions
-            ->add(Crud::PAGE_INDEX, $showMainSessions)
-            ->add(Crud::PAGE_INDEX, $addMainSession);
+//            ->add(Crud::PAGE_INDEX, $showMainSessions)
+//            ->add(Crud::PAGE_INDEX, $addMainSession)
+            ;
     }
 
     public function showMainSessions(AdminContext $context): RedirectResponse
@@ -81,7 +82,7 @@ class HallCrudController extends AbstractCrudController
     public function addMainSession(AdminContext $context): RedirectResponse
     {
         $session = new Session();
-        $session->setData(new DateTimeImmutable());
+//        $session->setData(new DateTimeImmutable());
 
         /**@var Hall $currentHall */
         $currentHall = $context->getEntity()->getInstance();

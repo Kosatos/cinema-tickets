@@ -26,6 +26,11 @@ class Hall
         $this->sessions = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+     return "Зал #{$this->number}";
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -5,12 +5,10 @@ namespace App\Entity;
 use App\Repository\SessionRepository;
 use DateTime;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use JetBrains\PhpStorm\ArrayShape;
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 
 #[ORM\Entity(repositoryClass: SessionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -23,16 +21,6 @@ class Session
 
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $data = null;
-
-    #[Assert\Time]
-    #[ORM\Column(type: 'string', length: 8, nullable: true)]
-    private ?string $started_at;
-
-    #[ORM\ManyToOne(targetEntity: Session::class, cascade: ['persist'], inversedBy: 'sessions')]
-    private ?Session $session;
-
-    #[ORM\OneToMany(mappedBy: 'session', targetEntity: Session::class, cascade: ['persist', 'remove'])]
-    private ?Collection $sessions;
 
     #[ORM\ManyToOne(targetEntity: Hall::class, cascade: ['persist'], inversedBy: 'sessions')]
     private ?Hall $hall;
@@ -83,11 +71,6 @@ class Session
         ];
     }
 
-    public function __construct()
-    {
-        $this->sessions = new ArrayCollection();
-    }
-
     public function __toString(): string
     {
         if ($data = $this->data) {
@@ -96,7 +79,7 @@ class Session
             return $dateTime->format('d:m:Y');
         }
 
-        return $this->started_at ?? 'сеанс';
+        return 'сеанс';
     }
 
     public function getId(): ?int
@@ -111,65 +94,7 @@ class Session
 
     public function setData(?DateTimeImmutable $data): self
     {
-        if ($data instanceof DateTimeImmutable) {
-            $data = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', "{$data->format('Y-m-d')} 00:01:00");
-        }
-
         $this->data = $data;
-
-        return $this;
-    }
-
-    public function getStartedAt(): ?string
-    {
-        return $this->started_at;
-    }
-
-    public function setStartedAt(?string $started_at): self
-    {
-        $this->started_at = $started_at;
-
-        return $this;
-    }
-
-    public function getSession(): ?self
-    {
-        return $this->session;
-    }
-
-    public function setSession(?self $session): self
-    {
-        $this->session = $session;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|null
-     */
-    public function getSessions(): ?Collection
-    {
-        return $this->sessions;
-    }
-
-    public function addSession(?self $session): self
-    {
-        if (!$this->sessions->contains($session)) {
-            $this->sessions[] = $session;
-            $session->setSession($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSession(self $session): self
-    {
-        if ($this->sessions->removeElement($session)) {
-            // set the owning side to null (unless already changed)
-            if ($session->getSession() === $this) {
-                $session->setSession(null);
-            }
-        }
 
         return $this;
     }
@@ -207,18 +132,34 @@ class Session
 
     public function setSchema(?string $sessionScheema): self
     {
-        if (key_exists($sessionScheema, self::SESSION_SCHEMA)) {
-            array_map(function ($time) {
-                $newSession = new Session();
-                $newSession->setStartedAt($time);
-
-                $this->addSession($newSession);
-
-            }, self::SESSION_SCHEMA[$sessionScheema]);
-
-            return $this;
-        }
+        $this->schema = $sessionScheema;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function preUpdate(LifecycleEventArgs $args): void
+    {
+
+        if ($schema = $this->schema) {
+
+            if (array_key_exists($schema, self::SESSION_SCHEMA)) {
+                $em = $args->getObjectManager();
+
+                array_map(function (string $time) use ($em) {
+                    $dataFormat = "{$this->data->format('Y-m-d')} {$time}";
+
+                    $session = new Session();
+                    $session->setCinema($this->cinema);
+                    $session->setHall($this->hall);
+                    $session->setData(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dataFormat));
+
+                    $em->persist($session);
+                }, self::SESSION_SCHEMA[$schema]);
+
+                $em->remove($this);
+//                $em->flush();
+            }
+        }
     }
 }
