@@ -1,0 +1,9 @@
+@import "mixins/font-face";
+
+@include font-face("Raleway", "Raleway-100", 100, normal);
+@include font-face("Raleway", "Raleway-300", 300, normal);
+@include font-face("Raleway", "Raleway-400", 400, normal);
+@include font-face("Raleway", "Raleway-500", 500, normal);
+@include font-face("Raleway", "Raleway-700", 700, normal);
+@include font-face("Raleway", "Raleway-900", 900, normal);
+
