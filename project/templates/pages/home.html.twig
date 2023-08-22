@@ -1,6 +1,6 @@
 {# @var cinema \App\Entity\Cinema #}
 {# @var country \App\Entity\Country #}
-{# @var main_session \App\Entity\Session #}
+{# @var mainSession \App\Entity\Session #}
 {# @var session \App\Entity\Session #}
 
 {% extends 'base.html.twig' %}
@@ -32,50 +32,47 @@
 
 {% block body %}
 
-    {% if films | length > 0 %}
+    {% if mainSessions | length > 0 %}
 
-        {% for cinema in films %}
+        {% for session in mainSessions %}
 
             <section class="movie">
                 <div class="movie__info">
-                    {% if cinema.gallery | length > 0 %}
-                        {% set galleryItem = cinema.gallery.current %}
+                    {% if session.cinema.gallery | length > 0 %}
+                        {% set galleryItem = session.cinema.gallery %}
 
                         <div class="movie__poster">
                             {% include 'embed/media/media.html.twig' with {
                                 media: galleryItem.image,
                                 filter_cache: 'middle_banner',
-                                image_alt: cinema.name,
+                                image_alt: session.cinema.name,
                                 class: 'movie__poster-image'
                             } %}
                         </div>
 
                     {% endif %}
                     <div class="movie__description">
-                        <h2 class="movie__title">{{ cinema.name }}</h2>
-                        <p class="movie__synopsis">{{ cinema.description }}</p>
+                        <h2 class="movie__title">{{ session.cinema.name }}</h2>
+                        <p class="movie__synopsis">{{ session.cinema.description }}</p>
                         <p class="movie__data">
-                            <span class="movie__data-duration">{{ film_interval(cinema.playbackTime) }}</span>
-                            {% for country in cinema.countries %}
+                            <span class="movie__data-duration">{{ film_interval(session.cinema.playbackTime) }}</span>
+                            {% for country in session.cinema.countries %}
                                 <span class="movie__data-origin">{{ country.name }}</span>
                             {% endfor %}
                         </p>
                     </div>
                 </div>
 
-                {% for main_session in cinema.sessions %}
                     <div class="movie-seances__hall">
-                        <h3 class="movie-seances__hall-title">Зал {{ main_session.hall.number }}</h3>
-                        <h3 class="movie-seances__hall-title">Дата: {{ main_session.data | format_datetime('full', 'none', locale='ru') }}</h3>
+                        <h3 class="movie-seances__hall-title">Зал {{ session.hall.number }}</h3>
                         <ul class="movie-seances__list">
-                            {% for session in main_session.sessions %}
+                            {% for session in session.sessions %}
                                 <li class="movie-seances__time-block"><a class="movie-seances__time"
-                                                                         href="{{ path('app_show_cinema', {slug: main_session.cinema.slug}) }}">{{ session.startedAt[:5] }}</a>
+                                                                         href="{{ path('app_show_cinema', {slug: session.session.cinema.slug}) }}">{{ session.startedAt[:5] }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
                     </div>
-                {% endfor %}
 
             </section>
 
