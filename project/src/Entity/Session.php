@@ -78,7 +78,7 @@ class Session
         if ($data = $this->data) {
             $dateTime = new DateTime("@{$data->getTimeStamp()}");
 
-            return $dateTime->format('d:m:Y');
+            return $dateTime->format('d:m:Y H:i');
         }
 
         return 'сеанс';
