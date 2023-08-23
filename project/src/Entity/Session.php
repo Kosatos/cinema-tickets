@@ -132,9 +132,9 @@ class Session
         return $this->schema;
     }
 
-    public function setSchema(?string $sessionScheema): self
+    public function setSchema(?string $sessionSchema): self
     {
-        $this->schema = $sessionScheema;
+        $this->schema = $sessionSchema;
 
         return $this;
     }
