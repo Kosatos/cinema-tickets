@@ -22,6 +22,8 @@ class Session
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $data = null;
 
+	#TODO resolve slug to targets to $data & $hall
+
     #[ORM\ManyToOne(targetEntity: Hall::class, cascade: ['persist'], inversedBy: 'sessions')]
     private ?Hall $hall;
 

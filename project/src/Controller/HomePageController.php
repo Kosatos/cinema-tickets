@@ -2,28 +2,26 @@
 
 namespace App\Controller;
 
-use App\Entity\Session;
+use App\Entity\Cinema;
 use DateTimeImmutable;
-use App\Repository\SessionRepository;
+use App\Entity\Session;
+use App\Repository\CinemaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class HomePageController extends AbstractController
 {
-    #[Route('/session/{data}', name: 'homepage')]
-    public function index(SessionRepository $sessionRepository, $data = null): Response
-    {
-        $sessionsAll = $sessionRepository->findAll();
+	#[Route('/', name: 'homepage')]
+	public function index(CinemaRepository $cinemaRepository): Response
+	{
+		$data = (new DateTimeImmutable())->format('Y-m-d');
 
-        if (null == $data) {
-            $data = (new DateTimeImmutable())->format('Y-m-d');
-        }
+		$films = array_filter($cinemaRepository->findAll(), fn(Cinema $cinema) => $cinema
+				->getSessions()
+				->filter(fn(Session $session) => $session->getData()->format('Y-m-d') === $data)->count() > 0
+		);
 
-        $sessions = array_filter($sessionsAll, function (Session $session) use ($data) {
-            return $session->getData()->format('Y-m-d') === $data;
-        });
-
-        return $this->render('pages/home.html.twig', compact('sessions'));
-    }
+		return $this->render('pages/home.html.twig', compact('films'));
+	}
 }
