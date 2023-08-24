@@ -16,10 +16,12 @@
 {% block header %}
     {% include 'header.html.twig' %}
 {% endblock %}
-{% block nav %}
-{% endblock %}
-{% block body %}
-{% endblock %}
+
+{% block nav %}{% endblock %}
+
+<main>
+    {% block body %}{% endblock %}
+</main>
 
 {% block javascripts %}
     {{ encore_entry_script_tags('app') }}

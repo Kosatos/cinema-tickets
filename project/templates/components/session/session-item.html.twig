@@ -4,11 +4,11 @@
     <div class="movie__info">
         <div class="movie__poster">
             {% if cinema['cinema'].gallery | length > 0 %}
-                {% set galleryItem = cinema['cinema'].gallery %}
+                {% set galleryItem = cinema['cinema'].gallery.current %}
                 {% include 'embed/media/media.html.twig' with {
                     media: galleryItem.image,
                     filter_cache: 'middle_banner',
-                    image_alt: cinema.name,
+                    image_alt: cinema['cinema'].name,
                     class: 'movie__poster-image'
                 } %}
             {% else %}

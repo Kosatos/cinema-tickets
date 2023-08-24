@@ -148,7 +148,7 @@ body {
       border: 1.5rem solid transparent;
       border-bottom: 0 solid transparent;
       border-right: 0 solid transparent;
-      border-left: 0.7rem solid #c0e9e8;
+      border-left: 0.7rem solid #ffffff;
     }
   }
 
@@ -207,6 +207,12 @@ body {
       color: $black;
       text-decoration: none;
       font-size: 1.5rem;
+      transition: background-color .4s ease, color .4s ease;
+      @media screen and (min-width: 1180px) {
+        &:hover {
+          background-color: #d0e3e9;
+        }
+      }
     }
   }
 }
@@ -225,6 +231,13 @@ body {
   font-size: 1.4rem;
   background-color: $green;
   color: $white;
+  transition: background-color .4s ease;
+  cursor: pointer;
+  @media screen and (min-width: 1180px) {
+    &:hover {
+      background-color: #006c6f;
+    }
+  }
 }
 
 .buying {
@@ -311,6 +324,10 @@ body {
   border: 1px solid #525252;
   box-sizing: border-box;
   border-radius: 4px;
+  transition-property: background-color, box-shadow, transform;
+  transition-duration: .4s;
+  transition-timing-function: ease;
+  cursor: pointer;
 
   &:not(:first-of-type) {
     margin-left: 4px;
@@ -319,6 +336,8 @@ body {
 
 .buying-scheme__chair_disabled {
   opacity: 0;
+  pointer-events: none;
+  user-select: none;
 }
 
 .buying-scheme__chair_standart {
@@ -335,8 +354,18 @@ body {
 
 .buying-scheme__chair_selected {
   background-color: #25C4CE;
-  box-shadow: 0px 0px 4px #16A6AF;
+  box-shadow: 0 0 4px #16A6AF;
   transform: scale(1.2);
+}
+
+.buying-scheme__chair {
+  &_standart, &_vip {
+    @media screen and (min-width: 1180px) {
+      &:hover {
+        background-color: #25C4CE;
+      }
+    }
+  }
 }
 
 .buying-scheme__legend {
