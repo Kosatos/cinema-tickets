@@ -7,12 +7,16 @@
 
 #### How to init:
 ```angular2html
-make init
+1. make init
 
-cd project && docker-compose run --rm php-cli bash 
+2. cd project && docker-compose run --rm php-cli bash 
+3. symfony console doctrine:migrations:migrate
+4. symfony console doctrine:fixtures:load
 
-symfony console doctrine:migrations:migrate
-symfony console doctrine:fixtures:load
+или
+
+2. make app-migrations
+3. make app-fixtures
 ```
 
 #### Admin panel
