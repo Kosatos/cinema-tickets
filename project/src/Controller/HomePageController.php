@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomePageController extends AbstractController
 {
+	#TODO перенести логику поиска залов для фильмов, и сессий для залов в репозитории... потренироваться нужно будет
 	#[Route('/', name: 'homepage')]
 	public function index(CinemaRepository $cinemaRepository, HallRepository $hallRepository): Response
 	{
