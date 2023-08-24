@@ -3,8 +3,8 @@
 <section class="movie">
     <div class="movie__info">
         <div class="movie__poster">
-            {% if cinema.gallery | length > 0 %}
-                {% set galleryItem = cinema.gallery %}
+            {% if cinema['cinema'].gallery | length > 0 %}
+                {% set galleryItem = cinema['cinema'].gallery %}
                 {% include 'embed/media/media.html.twig' with {
                     media: galleryItem.image,
                     filter_cache: 'middle_banner',
@@ -12,34 +12,37 @@
                     class: 'movie__poster-image'
                 } %}
             {% else %}
-                <img class="movie__poster-image" alt="{{ cinema.name }}"
+                <img class="movie__poster-image" alt="{{ cinema['cinema'].name }}"
                      src="{{ asset('build/images/default-film-image.jpg') }}">
             {% endif %}
         </div>
         <div class="movie__description">
-            <h2 class="movie__title">{{ cinema.name }}</h2>
-            <p class="movie__synopsis">{{ cinema.description }}</p>
+            <h2 class="movie__title">{{ cinema['cinema'].name }}</h2>
+            <p class="movie__synopsis">{{ cinema['cinema'].description }}</p>
             <p class="movie__data">
-                <span class="movie__data-duration">{{ film_interval(cinema.playbackTime) }}</span>
-                {% for country in cinema.countries %}
+                <span class="movie__data-duration">{{ film_interval(cinema['cinema'].playbackTime) }}</span>
+                {% for country in cinema['cinema'].countries %}
                     <span class="movie__data-origin">{{ country.name }}</span>
                 {% endfor %}
             </p>
         </div>
     </div>
 
-    <div class="movie-seances__hall">
-        <h3 class="movie-seances__hall-title">Зал {{ cinema.sessions.current.hall.number }}</h3>
-        <ul class="movie-seances__list">
-            {% for session in cinema.sessions %}
-                <li class="movie-seances__time-block">
-                    <a class="movie-seances__time"
-                       href="{{ path('app_show_cinema', {slug: session.cinema.slug}) }}">
-                        {{ session.data|date('H:s') }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-
+    {% for hall in cinema['halls'] %}
+        {% if hall['sessions'] | length > 0 %}
+            <div class="movie-seances__hall">
+                <h3 class="movie-seances__hall-title">Зал {{ hall['hall'] }}</h3>
+                <ul class="movie-seances__list">
+                    {% for session in hall['sessions'] %}
+                        <li class="movie-seances__time-block">
+                            <a class="movie-seances__time"
+                               href="{{ path('app_show_cinema', {slug: session.cinema.slug}) }}">
+                                {{ session.data|date('H:s') }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endfor %}
 </section>
