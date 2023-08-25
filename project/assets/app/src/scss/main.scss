@@ -62,6 +62,7 @@ body {
     border-radius: 2px;
     text-decoration: none;
     color: $black;
+    transition: all .4s ease;
 
     & + .page-nav__day {
       margin-left: 1px;
@@ -107,6 +108,7 @@ body {
       content: 'Сегодня';
       display: block;
     }
+
     .page-nav__day-week, .page-nav__day-number {
       display: inline;
     }
@@ -119,6 +121,7 @@ body {
   margin-top: 3rem;
   background: rgba(255, 255, 255, 0.7);
   color: $black;
+  animation: fadeIn .4s ease forwards;
 
   .movie__info {
     display: flex;
@@ -522,5 +525,27 @@ body {
   }
   .buying__info-hint {
     display: none;
+  }
+}
+
+.sessions-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+  padding: 40px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  animation: fadeIn .4s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

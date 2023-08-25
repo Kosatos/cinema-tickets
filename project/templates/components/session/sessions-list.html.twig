@@ -1,3 +1,10 @@
-{% for cinema in films %}
-    {% include 'components/session/session-item.html.twig' with { cinema } %}
-{% endfor %}
+{% if films | length > 0 %}
+    {% for cinema in films %}
+        {% include 'components/session/session-item.html.twig' with { cinema } %}
+    {% endfor %}
+{% else %}
+    <div class="sessions-error">
+        В этот день сеансов нет...
+        <img src="{{ asset('build/images/sad-face.png') }}" alt="sad">
+    </div>
+{% endif %}
