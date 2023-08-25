@@ -48,6 +48,10 @@ class HomePageController extends AbstractController
                 $currentDataSessionHalls),
         ], $currentDataFilms);
 
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('components/session/sessions-list.html.twig', compact('films'));
+        }
+
         return $this->render('pages/home.html.twig', compact('films'));
     }
 }
