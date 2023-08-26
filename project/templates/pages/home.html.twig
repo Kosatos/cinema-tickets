@@ -6,43 +6,7 @@
 {% extends 'base.html.twig' %}
 
 {% block nav %}
-    {% set week = [
-        {
-            date: '2023-08-25',
-            name: 'Пт',
-            today: true
-        },
-        {
-            date: '2023-08-26',
-            name: 'Сб',
-            today: false
-        },
-        {
-            date: '2023-08-27',
-            name: 'Вс',
-            today: false
-        },
-        {
-            date: '2023-08-28',
-            name: 'Пн',
-            today: false
-        },
-        {
-            date: '2023-08-29',
-            name: 'Вт',
-            today: false
-        },
-        {
-            date: '2023-08-30',
-            name: 'Ср',
-            today: false
-        },
-        {
-            date: '2023-08-31',
-            name: 'Чт',
-            today: false
-        }
-    ] %}
+    {% set week = currentWeekCollection() %}
     <nav class="page-nav">
         {% for day in week %}
             <a class="page-nav__day{% if day.today %} page-nav__day_today page-nav__day_chosen{% endif %}" href="#"

@@ -16,9 +16,7 @@ class SessionFixtures extends BaseFixture implements DependentFixtureInterface
 		$this->createEntity(Session::class, 7, function (Session $session, $count) {
 			$data = new DateTimeImmutable();
 
-
 			/**@var Cinema $cinema */
-
 			if ($count < 2) {
 				$data = $data->modify('+' . $count . ' day');
 				$session->setSchema('schema A');
