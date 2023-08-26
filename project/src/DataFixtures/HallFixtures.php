@@ -11,7 +11,7 @@ class HallFixtures extends BaseFixture /* implements DependentFixtureInterface *
 {
     public function loadData(ObjectManager $manager): void
     {
-        $this->createEntity(Hall::class, 2, function (Hall $hall, $count) {
+        $this->createEntity(Hall::class, 3, function (Hall $hall, $count) {
             $hall->setNumber($count + 1);
         });
 

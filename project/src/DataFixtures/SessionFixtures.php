@@ -11,43 +11,53 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class SessionFixtures extends BaseFixture implements DependentFixtureInterface
 {
-	public function loadData(ObjectManager $manager): void
-	{
-		$this->createEntity(Session::class, 7, function (Session $session, $count) {
-			$data = new DateTimeImmutable();
+    private const SESSION = [
+        'schema A',
+        'schema B',
+        'schema C',
+    ];
 
-			/**@var Cinema $cinema */
-			if ($count < 2) {
-				$data = $data->modify('+' . $count . ' day');
-				$session->setSchema('schema A');
-				$cinema = $this->getReference("Cinema_0");
-			} elseif ($count < 5) {
-				$data = $data->modify('+' . $count - 2 . ' day');
-				$session->setSchema('schema B');
-				$cinema = $this->getReference("Cinema_1");
-			} else {
-				$data = $data->modify('+' . $count - 5 . ' day');
-				$session->setSchema('schema B');
-				$cinema = $this->getReference("Cinema_2");
-			}
+    public function loadData(ObjectManager $manager): void
+    {
+        $this->createEntity(Session::class, 9, function (Session $session, $count) {
+            $data = new DateTimeImmutable();
+            /**@var Cinema $cinema */
+            if ($count < 3) {
+                $data = $data->modify('+0 day');
+                list($cinema, $hall) = $this->setData($session, $count);
+            } elseif ($count < 6) {
+                $data = $data->modify('+1 day');
+                list($cinema, $hall) = $this->setData($session, $count - 3);
+            } else {
+                $data = $data->modify('+2 day');
+                list($cinema, $hall) = $this->setData($session, $count - 6);
+            }
 
-			/**@var Hall $hall */
-			$hallNumber = $count % 2 ? 0 : 1;
-			$hall       = $this->getReference("Hall_{$hallNumber}");
+            /**@var Hall $hall */
 
-			$session->setData($data);
-			$session->setCinema($cinema);
-			$session->setHall($hall);
-		});
+            $session->setData($data);
+            $session->setCinema($cinema);
+            $session->setHall($hall);
+        });
 
-		$manager->flush();
-	}
+        $manager->flush();
+    }
 
-	public function getDependencies(): array
-	{
-		return [
-			HallFixtures::class,
-			CinemaFixtures::class,
-		];
-	}
+    private function setData(Session $session, $count): array
+    {
+        $session->setSchema(self::SESSION[$count]);
+
+        return [
+            $this->getReference("Cinema_{$count}"),
+            $this->getReference("Hall_{$count}"),
+        ];
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            HallFixtures::class,
+            CinemaFixtures::class,
+        ];
+    }
 }
