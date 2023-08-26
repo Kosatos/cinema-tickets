@@ -6,6 +6,7 @@ use App\Repository\SessionRepository;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\ArrayShape;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -22,13 +23,17 @@ class Session
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?DateTimeImmutable $data = null;
 
-	#TODO resolve slug to targets to $data & $hall
+    #[Gedmo\Slug(fields: ['data'])]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    private string $slug;
 
     #[ORM\ManyToOne(targetEntity: Hall::class, cascade: ['persist'], inversedBy: 'sessions')]
     private ?Hall $hall;
 
     #[ORM\ManyToOne(targetEntity: Cinema::class, cascade: ['persist'], inversedBy: 'sessions')]
     private ?Cinema $cinema;
+
+    public ?string $schema = null;
 
     private const SCHEMA_A = 'schema A';
     private const SCHEMA_B = 'schema B';
@@ -101,6 +106,18 @@ class Session
         return $this;
     }
 
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
     public function getHall(): ?Hall
     {
         return $this->hall;
@@ -125,8 +142,6 @@ class Session
         return $this;
     }
 
-    public ?string $schema = null;
-
     public function getSchema(): ?string
     {
         return $this->schema;
@@ -140,13 +155,12 @@ class Session
     }
 
     #[ORM\PrePersist]
-    public function preUpdate(LifecycleEventArgs $args): void
+    public function prePersist(LifecycleEventArgs $args)
     {
+        $em = $args->getObjectManager();
 
         if ($schema = $this->schema) {
-
             if (array_key_exists($schema, self::SESSION_SCHEMA)) {
-                $em = $args->getObjectManager();
 
                 array_map(function (string $time) use ($em) {
                     $dataFormat = "{$this->data->format('Y-m-d')} {$time}";
@@ -158,10 +172,11 @@ class Session
 
                     $em->persist($session);
                 }, self::SESSION_SCHEMA[$schema]);
-
-                $em->remove($this);
-//                $em->flush();
             }
+
+            $this->setData(null);
+            $this->setHall(null);
+            $this->setCinema(null);
         }
     }
 }

@@ -20,6 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SessionCrudController extends AbstractCrudController
 {
@@ -55,6 +56,9 @@ class SessionCrudController extends AbstractCrudController
 				->setFormTypeOptions([
 					'input' => 'datetime_immutable',
 					'widget' => 'single_text',
+                    'constraints' => [
+                        new NotBlank()
+                    ]
 				])
 				->setTextAlign('center')
 				->setColumns('col-sm-6 col-lg-5 col-xxl-3')
@@ -62,6 +66,11 @@ class SessionCrudController extends AbstractCrudController
 			,
 			FormField::addRow(),
 			AssociationField::new('cinema', 'Фильм')
+                ->setFormTypeOptions([
+                    'constraints' => [
+                        new NotBlank()
+                    ]
+                ])
 				->setTextAlign('center')
 				->setColumns('col-sm-6 col-lg-5 col-xxl-3')
 				->setHelp('Выберите фильм из выпадающего списка.')
@@ -70,12 +79,22 @@ class SessionCrudController extends AbstractCrudController
 			AssociationField::new('hall', 'Зал')
 				->setTextAlign('center')
 				->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+                ->setFormTypeOptions([
+                    'constraints' => [
+                        new NotBlank()
+                    ]
+                ])
 				->setHelp('Выберите фильм из выпадающего списка.')
 			,
 			FormField::addRow(),
 			ChoiceField::new('schema', 'Схема сеансов')
 				->setChoices(Session::getAvailavleSchemaName())
 				->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+                ->setFormTypeOptions([
+                    'constraints' => [
+                        new NotBlank()
+                    ]
+                ])
 				->onlyOnForms()
 				->setHelp('Выберете шаблон сеансов')
 			,

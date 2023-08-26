@@ -1,12 +1,15 @@
+{# @var session \App\Entity\Session #}
+
 {% extends 'base.html.twig' %}
+
 {% block body %}
-    {% if cinema is not null %}
+    {% if session is not null %}
         <section class="buying">
             <div class="buying__info">
                 <div class="buying__info-description">
-                    <h2 class="buying__info-title">{{ cinema.name }}</h2>
-                    <p class="buying__info-start">Начало сеанса: 18:30</p>
-                    <p class="buying__info-hall">Зал 1</p>
+                    <h2 class="buying__info-title">{{ session.cinema.name }}</h2>
+                    <p class="buying__info-start">Начало сеанса: {{ session.data | date('H:i') }}</p>
+                    <p class="buying__info-hall">Зал {{ session.hall.number }}</p>
                 </div>
                 <div class="buying__info-hint">
                     <p>Тапните дважды,<br>чтобы увеличить</p>

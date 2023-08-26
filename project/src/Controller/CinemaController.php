@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Cinema;
+use App\Entity\Session;
 use App\Repository\CinemaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +21,8 @@ class CinemaController extends AbstractController
 //    }
 
     #[Route('/session/{slug}', name: 'app_show_cinema')]
-    public function showCinema(?Cinema $cinema): Response|NotFoundHttpException
+    public function showCinema(?Session $session): Response|NotFoundHttpException
     {
-        return $this->render('pages/session.html.twig', compact('cinema'));
+        return $this->render('pages/session.html.twig', compact('session'));
     }
 }
