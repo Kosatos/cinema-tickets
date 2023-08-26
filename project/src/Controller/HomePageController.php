@@ -39,11 +39,12 @@ class HomePageController extends AbstractController
             fn(Hall $hall) => array_filter($hall->getSessions()->toArray(), fn(Session $session) => $session->getHall()->getNumber() == $hall->getNumber() && $session->getData()->format('Y-m-d') == $data)
         );
 
+
         $films = array_map(fn(Cinema $cinema) => [
             'cinema' => $cinema,
             'halls' => array_map(fn(Hall $hall) => [
                 'hall' => $hall->getNumber(),
-                'sessions' => array_filter($hall->getSessions()->toArray(), fn(Session $session) => $session->getHall()->getNumber() == $hall->getNumber() && $session->getData()->format('Y-m-d') == $data)
+                'sessions' => array_filter($hall->getSessions()->toArray(), fn(Session $session) => $session->getHall()->getNumber() == $hall->getNumber() && $session->getData()->format('Y-m-d') == $data && $session->getCinema() === $cinema)
             ],
                 $currentDataSessionHalls),
         ], $currentDataFilms);

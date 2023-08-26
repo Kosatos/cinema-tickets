@@ -1,4 +1,5 @@
 {# @var cinema \App\Entity\Cinema #}
+{# @var cinema \App\Entity\Cinema #}
 
 <section class="movie">
     <div class="movie__info">
@@ -29,18 +30,20 @@
     </div>
 
     {% for hall in cinema['halls'] %}
-        <div class="movie-seances__hall">
-            <h3 class="movie-seances__hall-title">Зал {{ hall['hall'] }}</h3>
-            <ul class="movie-seances__list">
-                {% for session in hall['sessions'] %}
-                    <li class="movie-seances__time-block">
-                        <a class="movie-seances__time"
-                           href="{{ path('app_show_cinema', {slug: session.slug}) }}">
-                            {{ session.data|date('H:s') }}
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+        {% if hall['sessions'] | length > 0 %}
+            <div class="movie-seances__hall">
+                <h3 class="movie-seances__hall-title">Зал {{ hall['hall'] }}</h3>
+                <ul class="movie-seances__list">
+                    {% for session in hall['sessions'] %}
+                        <li class="movie-seances__time-block">
+                            <a class="movie-seances__time"
+                               href="{{ path('app_show_cinema', {slug: session.slug}) }}">
+                                {{ session.data|date('H:s') }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
     {% endfor %}
 </section>
