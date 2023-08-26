@@ -38,7 +38,7 @@
                         <li class="movie-seances__time-block">
                             <a class="movie-seances__time"
                                href="{{ path('app_show_cinema', {slug: session.slug}) }}">
-                                {{ session.data|date('H:s') }}
+                                {{ session.data|date('H:i') }}
                             </a>
                         </li>
                     {% endfor %}
