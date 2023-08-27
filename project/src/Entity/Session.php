@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SessionRepository;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\ArrayShape;
@@ -155,7 +156,7 @@ class Session
     }
 
     #[ORM\PrePersist]
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(LifecycleEventArgs $args): void
     {
         $em = $args->getObjectManager();
 
