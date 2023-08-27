@@ -187,8 +187,11 @@
             <button class="acceptin-button" onclick="location.href='payment.html'">Забронировать</button>
         </section>
     {% else %}
-        Фильм не найден, либо данные повреждены.
-        <a href="{{ path('homepage') }}">Вернуться на главную.</a>
+        <div class="sessions-error">
+            Фильм не найден, либо данные повреждены.
+            <a class="back-btn" href="{{ path('homepage') }}">Вернуться на главную</a>
+            <img src="{{ asset('build/images/sad-face.png') }}" alt="sad">
+        </div>
     {% endif %}
 {% endblock %}
 

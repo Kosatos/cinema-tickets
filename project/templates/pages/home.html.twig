@@ -6,8 +6,8 @@
         {% for day in week %}
             <a class="page-nav__day{% if day.today %} page-nav__day_today page-nav__day_chosen{% endif %}" href="#"
                data-date="{{ day.date }}">
-                <span class="page-nav__day-week">{{ day.name }}</span><span
-                        class="page-nav__day-number">{{ day.date | split('-')[2] }}</span>
+                <span class="page-nav__day-week">{{ day.name }}</span>
+                <span class="page-nav__day-number">{{ day.date | split('-')[2] }}</span>
             </a>
         {% endfor %}
     </nav>
@@ -17,7 +17,7 @@
 
     <div class="sessions-wrapper">
         {% if films | length > 0 %}
-            {% include 'components/session/sessions-list.html.twig' with { sessions: films} %}
+            {% include 'components/session/sessions-list.html.twig' with { sessions: films } %}
         {% else %}
             <div class="sessions-error">
                 В этот день сеансов нет...
