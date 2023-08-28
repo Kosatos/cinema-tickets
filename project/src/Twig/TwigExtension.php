@@ -8,93 +8,65 @@ use Twig\TwigFunction;
 
 class TwigExtension extends AbstractExtension
 {
-	public function getFunctions(): array
-	{
-		return [
-			new TwigFunction('film_interval', [$this, 'convertToTime']),
-			new TwigFunction('currentWeekCollection', [$this, 'getCurrentWeek']),
-			new TwigFunction('convertMinutes', [$this, 'getConvertMinutes']),
-		];
-	}
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('film_interval', [$this, 'convertToTime']),
+            new TwigFunction('currentWeekCollection', [$this, 'getCurrentWeek']),
+            new TwigFunction('convertMinutes', [$this, 'getConvertMinutes']),
+        ];
+    }
 
-	# TODO написать нормально (оптимизировать) 11 минут / 12 минут
-	public function getConvertMinutes(int $minutes): string
-	{
-		$mapped = [
-			'1' => 'минута',
-			'2' => 'минуты',
-			'3' => 'минуты',
-			'4' => 'минуты',
-			'5' => 'минут',
-			'6' => 'минут',
-			'7' => 'минут',
-			'8' => 'минут',
-			'9' => 'минут',
-			'0' => 'минут'
-		];
-		$data = substr((string)$minutes, -1);
+    public function convertToTime(string $time): string
+    {
+        $textCollection = ['минутa', 'минуты', 'минут'];
 
-		return $mapped[$data];
-	}
+        $from = date('Y-m-d 00:00:00');
+        $to = date('Y-m-d ' . $time);
+        $diff = strtotime($to) - strtotime($from);
+        $minutes = $diff / 60;
 
-	public function convertToTime(string $time): string
-	{
-		$mapped = [
-			'1' => 'минута',
-			'2' => 'минуты',
-			'3' => 'минуты',
-			'4' => 'минута',
-			'5' => 'минут',
-			'6' => 'минут',
-			'7' => 'минут',
-			'8' => 'минут',
-			'9' => 'минут',
-			'0' => 'минут'
-		];
+        $number = (int)substr((string)$minutes, -1);
 
+        $text = match (($number >= 20) ? $number % 10 : $number) {
+            1 => $textCollection[0],
+            2, 3, 4 => $textCollection[1],
+            default => $textCollection[2],
+        };
 
+        return (int)$minutes . " $text";
+    }
 
-		$from    = date('Y-m-d 00:00:00');
-		$to      = date('Y-m-d ' . $time);
-		$diff    = strtotime($to) - strtotime($from);
-		$minutes = $diff / 60;
+    public function getCurrentWeek(): array
+    {
+        $translater = [
+            'Mon' => 'Пн',
+            'Tue' => 'Вт',
+            'Wed' => 'Ср',
+            'Thu' => 'Чт',
+            'Fri' => 'Пт',
+            'Sat' => 'Сб',
+            'Sun' => 'Вс',
+        ];
+        $data = new DateTimeImmutable();
 
-		$data = substr((string)$minutes, -1);
+        $week = [];
+        for ($i = 0; $i < 7; $i++) {
+            if ($i === 0) {
+                $week[] = [
+                    'date' => $formattedData = $data->format('Y-m-d'),
+                    'name' => $translater[date('D', strtotime($formattedData))],
+                    'today' => true,
+                ];
+            } else {
+                $week[] = [
+                    'date' => $formattedData = $data->modify('+' . $i . ' day')->format('Y-m-d'),
+                    'name' => $translater[date('D', strtotime($formattedData))],
+                    'today' => false,
+                ];
+            }
+        }
 
-
-		return (int)$minutes . " {$mapped[$data]}";
-	}
-
-	public function getCurrentWeek(): array
-	{
-		$translater = [
-			'Mon' => 'Пн',
-			'Tue' => 'Вт',
-			'Wed' => 'Ср',
-			'Thu' => 'Чт',
-			'Fri' => 'Пт',
-			'Sat' => 'Сб',
-			'Sun' => 'Вс',
-		];
-		$data       = new DateTimeImmutable();
-
-		$week = [];
-		for ($i = 0; $i < 7; $i++) {
-			if ($i === 0) {
-				$week[] = [
-					'date' => $formattedData = $data->format('Y-m-d'),
-					'name' => $translater[date('D', strtotime($formattedData))],
-					'today' => true,
-				];
-			} else {
-				$week[] = [
-					'date' => $formattedData = $data->modify('+' . $i . ' day')->format('Y-m-d'),
-					'name' => $translater[date('D', strtotime($formattedData))],
-					'today' => false,
-				];
-			}
-		}
-
-		return $week;
-	}
+        return $week;
+    }
 }
