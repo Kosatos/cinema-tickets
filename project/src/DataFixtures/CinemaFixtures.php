@@ -51,7 +51,7 @@ class CinemaFixtures extends BaseFixture implements DependentFixtureInterface
 
     public function loadData(ObjectManager $manager): void
     {
-        $this->createEntity(Cinema::class, 3, function (Cinema $cinema, $count) {
+        $this->createEntity(Cinema::class, 6, function (Cinema $cinema, $count) {
             $countries = [];
             for ($i = 0; $i < 5; $i++) {
                 $countries[] = $this->getReference("Country_$i");

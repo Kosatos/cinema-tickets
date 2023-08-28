@@ -16,7 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomePageController extends AbstractController
 {
-    #TODO перенести логику поиска залов для фильмов, и сессий для залов в репозитории... потренироваться нужно будет
+    # TODO перенести логику поиска залов для фильмов, и сессий для залов в репозитории... потренироваться нужно будет.
+	# TODO кастомизировать вывод минут, минуты, минута...
     /**
      * @throws Exception
      */
