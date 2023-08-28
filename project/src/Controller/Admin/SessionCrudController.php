@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Hall;
 use App\Entity\Session;
 use Doctrine\ORM\QueryBuilder;
 use App\Controller\Admin\Trait\RepositoryTrait;
@@ -14,12 +15,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Orm\EntityRepository;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SessionCrudController extends AbstractCrudController
@@ -52,7 +55,7 @@ class SessionCrudController extends AbstractCrudController
 	public function configureFields(string $pageName): iterable
 	{
 		return [
-			DateTimeField::new('data', 'Дата')
+			DateField::new('data', 'Дата')
 				->setFormTypeOptions([
 					'input' => 'datetime_immutable',
 					'widget' => 'single_text',

@@ -5,11 +5,9 @@ namespace App\Entity;
 use App\Repository\SessionRepository;
 use DateTime;
 use DateTimeImmutable;
-use Doctrine\ORM\Event\PreFlushEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\ArrayShape;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 
 #[ORM\Entity(repositoryClass: SessionRepository::class)]
@@ -155,16 +153,31 @@ class Session
         return $this;
     }
 
+    /**
+     * @throws \Exception
+     */
     #[ORM\PrePersist]
     public function prePersist(LifecycleEventArgs $args): void
     {
         $em = $args->getObjectManager();
 
+        $incorrectSession = array_filter(
+            $args->getEntityManager()->getRepository(Session::class)->findAll(),
+            fn(Session $session) => $session->getHall() === $this->getHall() && $session->getData()->format('Y-m-d') === $this->getData()->format('Y-m-d')
+        );
+
+        if (count($incorrectSession) > 0) {
+            $this->setData(null);
+            $this->setHall(null);
+            $this->setCinema(null);
+            return;
+        }
+
         if ($schema = $this->schema) {
             if (array_key_exists($schema, self::SESSION_SCHEMA)) {
 
                 array_map(function (string $time) use ($em) {
-                    $dataFormat = "{$this->data->format('Y-m-d')} {$time}";
+                    $dataFormat = "{$this->data->format('Y-m-d')} $time";
 
                     $session = new Session();
                     $session->setCinema($this->cinema);
