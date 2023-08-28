@@ -6,7 +6,7 @@ use DateTimeImmutable;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class TwigExtantion extends AbstractExtension
+class TwigExtension extends AbstractExtension
 {
 	public function getFunctions(): array
 	{
