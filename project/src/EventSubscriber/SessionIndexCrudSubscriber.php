@@ -9,30 +9,25 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SessionIndexCrudSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly SessionRepository $sessionRepository)
-    {
-    }
+	public function __construct(private readonly SessionRepository $sessionRepository)
+	{
+	}
 
-    public function onBeforeShowIndexPage(BeforeCrudActionEvent $event): void
-    {
+	public function onBeforeShowIndexPage(BeforeCrudActionEvent $event): void
+	{
+		if ($event->getAdminContext()->getCrud()->getEntityFqcn() === Session::class) {
+			array_map(function (Session $session) {
+				if (!$session->getData() || !$session->getCinema() || !$session->getHall()) {
+					$this->sessionRepository->remove($session, true);
+				}
+			}, $this->sessionRepository->findAll());
+		}
+	}
 
-        if ($event->getAdminContext()->getCrud()->getEntityFqcn() !== Session::class) {
-            return;
-        }
-
-        array_map(function (Session $session) {
-            if (!$session->getData() || !$session->getCinema() || !$session->getHall()) {
-                $this->sessionRepository->remove($session, true);
-            }
-        }, $this->sessionRepository->findAll());
-
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            BeforeCrudActionEvent::class => 'onBeforeShowIndexPage',
-        ];
-    }
-
+	public static function getSubscribedEvents(): array
+	{
+		return [
+			BeforeCrudActionEvent::class => 'onBeforeShowIndexPage',
+		];
+	}
 }
