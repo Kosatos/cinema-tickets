@@ -9,188 +9,201 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\ArrayShape;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 #[ORM\Entity(repositoryClass: SessionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 class Session
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
-    private ?int $id = null;
+	#[ORM\Id]
+	#[ORM\GeneratedValue]
+	#[ORM\Column(type: 'integer')]
+	private ?int $id = null;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?DateTimeImmutable $data = null;
+	#[ORM\Column(type: 'datetime_immutable', nullable: true)]
+	private ?DateTimeImmutable $data = null;
 
-    #[Gedmo\Slug(fields: ['data'])]
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
-    private string $slug;
+	#[Gedmo\Slug(fields: ['data'])]
+	#[ORM\Column(type: 'string', length: 255, unique: true)]
+	private string $slug;
 
-    #[ORM\ManyToOne(targetEntity: Hall::class, cascade: ['persist'], inversedBy: 'sessions')]
-    private ?Hall $hall;
+	#[ORM\ManyToOne(targetEntity: Hall::class, cascade: ['persist'], inversedBy: 'sessions')]
+	private ?Hall $hall;
 
-    #[ORM\ManyToOne(targetEntity: Cinema::class, cascade: ['persist'], inversedBy: 'sessions')]
-    private ?Cinema $cinema;
+	#[ORM\ManyToOne(targetEntity: Cinema::class, cascade: ['persist'], inversedBy: 'sessions')]
+	private ?Cinema $cinema;
 
-    public ?string $schema = null;
+	private ?string $schema = null;
+	private bool $isForce = false;
 
-    private const SCHEMA_A = 'schema A';
-    private const SCHEMA_B = 'schema B';
-    private const SCHEMA_C = 'schema C';
-    private const SESSION_SCHEMA = [
-        'schema A' => [
-            '10:00:00',
-            '12:00:00',
-            '14:00:00',
-            '16:00:00',
-            '18:00:00',
-            '20:00:00',
-        ],
-        'schema B' => [
-            '10:00:00',
-            '11:30:00',
-            '13:00:00',
-            '14:30:00',
-            '16:00:00',
-            '17:30:00',
-            '19:00:00',
-        ],
-        'schema C' => [
-            '10:00:00',
-            '13:00:00',
-            '16:00:00',
-            '19:00:00',
-        ],
-    ];
+	#[Assert\Callback]
+	public function validate(ExecutionContextInterface $context, mixed $payload): void
+	{
+		if (!$this->isForce) {
+			$incorrectSession = array_filter(
+				$this->getHall()->getSessions()->toArray(),
+				fn(Session $session) => $session->getHall() === $this->getHall() && $session->getData()->format('Y-m-d') === $this->getData()->format('Y-m-d')
+			);
 
-    #[ArrayShape([
-        'схема A' => 'string',
-        'схема B' => 'string',
-        'схема C' => 'string',
-    ])]
-    public static function getAvailavleSchemaName(): array
-    {
-        return [
-            'схема A' => self::SCHEMA_A,
-            'схема B' => self::SCHEMA_B,
-            'схема C' => self::SCHEMA_C,
-        ];
-    }
+			if (count($incorrectSession) > 0) {
+				$context->buildViolation('В этот день кинозал забронирован другими сеансами')
+					->atPath('hall')
+					->addViolation();
+			}
+		}
+	}
 
-    public function __toString(): string
-    {
-        if ($data = $this->data) {
-            $dateTime = new DateTime("@{$data->getTimeStamp()}");
+	public function setIsForce(bool $isForce): self
+	{
+		$this->isForce = $isForce;
 
-            return $dateTime->format('d:m:Y H:i');
-        }
+		return $this;
+	}
 
-        return 'сеанс';
-    }
+	private const SCHEMA_A = 'schema A';
+	private const SCHEMA_B = 'schema B';
+	private const SCHEMA_C = 'schema C';
+	private const SESSION_SCHEMA = [
+		'schema A' => [
+			'10:00:00',
+			'12:00:00',
+			'14:00:00',
+			'16:00:00',
+			'18:00:00',
+			'20:00:00',
+		],
+		'schema B' => [
+			'10:00:00',
+			'11:30:00',
+			'13:00:00',
+			'14:30:00',
+			'16:00:00',
+			'17:30:00',
+			'19:00:00',
+		],
+		'schema C' => [
+			'10:00:00',
+			'13:00:00',
+			'16:00:00',
+			'19:00:00',
+		],
+	];
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+	#[ArrayShape([
+		'схема A' => 'string',
+		'схема B' => 'string',
+		'схема C' => 'string',
+	])]
+	public static function getAvailavleSchemaName(): array
+	{
+		return [
+			'схема A' => self::SCHEMA_A,
+			'схема B' => self::SCHEMA_B,
+			'схема C' => self::SCHEMA_C,
+		];
+	}
 
-    public function getData(): ?DateTimeImmutable
-    {
-        return $this->data;
-    }
+	public function __toString(): string
+	{
+		if ($data = $this->data) {
+			$dateTime = new DateTime("@{$data->getTimeStamp()}");
 
-    public function setData(?DateTimeImmutable $data): self
-    {
-        $this->data = $data;
+			return $dateTime->format('d:m:Y H:i');
+		}
 
-        return $this;
-    }
+		return 'сеанс';
+	}
 
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
+	public function getId(): ?int
+	{
+		return $this->id;
+	}
 
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
+	public function getData(): ?DateTimeImmutable
+	{
+		return $this->data;
+	}
 
-        return $this;
-    }
+	public function setData(?DateTimeImmutable $data): self
+	{
+		$this->data = $data;
 
-    public function getHall(): ?Hall
-    {
-        return $this->hall;
-    }
+		return $this;
+	}
 
-    public function setHall(?Hall $hall): self
-    {
-        $this->hall = $hall;
+	public function getSlug(): ?string
+	{
+		return $this->slug;
+	}
 
-        return $this;
-    }
+	public function setSlug(string $slug): self
+	{
+		$this->slug = $slug;
 
-    public function getCinema(): ?Cinema
-    {
-        return $this->cinema;
-    }
+		return $this;
+	}
 
-    public function setCinema(?Cinema $cinema): self
-    {
-        $this->cinema = $cinema;
+	public function getHall(): ?Hall
+	{
+		return $this->hall;
+	}
 
-        return $this;
-    }
+	public function setHall(?Hall $hall): self
+	{
+		$this->hall = $hall;
 
-    public function getSchema(): ?string
-    {
-        return $this->schema;
-    }
+		return $this;
+	}
 
-    public function setSchema(?string $sessionSchema): self
-    {
-        $this->schema = $sessionSchema;
+	public function getCinema(): ?Cinema
+	{
+		return $this->cinema;
+	}
 
-        return $this;
-    }
+	public function setCinema(?Cinema $cinema): self
+	{
+		$this->cinema = $cinema;
 
-    /**
-     * @throws \Exception
-     */
-    #[ORM\PrePersist]
-    public function prePersist(LifecycleEventArgs $args): void
-    {
-        $em = $args->getObjectManager();
+		return $this;
+	}
 
-        $incorrectSession = array_filter(
-            $args->getEntityManager()->getRepository(Session::class)->findAll(),
-            fn(Session $session) => $session->getHall() === $this->getHall() && $session->getData()->format('Y-m-d') === $this->getData()->format('Y-m-d')
-        );
+	public function getSchema(): ?string
+	{
+		return $this->schema;
+	}
 
-        if (count($incorrectSession) > 0) {
-            $this->setData(null);
-            $this->setHall(null);
-            $this->setCinema(null);
-            return;
-        }
+	public function setSchema(?string $sessionSchema): self
+	{
+		$this->schema = $sessionSchema;
 
-        if ($schema = $this->schema) {
-            if (array_key_exists($schema, self::SESSION_SCHEMA)) {
+		return $this;
+	}
 
-                array_map(function (string $time) use ($em) {
-                    $dataFormat = "{$this->data->format('Y-m-d')} $time";
+	#[ORM\PrePersist]
+	public function prePersist(LifecycleEventArgs $args): void
+	{
+		$em = $args->getObjectManager();
 
-                    $session = new Session();
-                    $session->setCinema($this->cinema);
-                    $session->setHall($this->hall);
-                    $session->setData(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dataFormat));
+		if ($schema = $this->schema) {
+			if (array_key_exists($schema, self::SESSION_SCHEMA)) {
 
-                    $em->persist($session);
-                }, self::SESSION_SCHEMA[$schema]);
-            }
+				array_map(function (string $time) use ($em) {
+					$dataFormat = "{$this->data->format('Y-m-d')} $time";
 
-            $this->setData(null);
-            $this->setHall(null);
-            $this->setCinema(null);
-        }
-    }
+					$session = new Session();
+					$session->setCinema($this->cinema);
+					$session->setHall($this->hall);
+					$session->setData(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dataFormat));
+					$session->setIsForce(true);
+
+					$em->persist($session);
+				}, self::SESSION_SCHEMA[$schema]);
+			}
+
+			$this->setData(null);
+			$this->setHall(null);
+			$this->setCinema(null);
+		}
+	}
 }
