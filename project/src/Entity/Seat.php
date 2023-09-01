@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\SeatRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SeatRepository::class)]
 class Seat
@@ -13,14 +15,41 @@ class Seat
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
+    #[Assert\Count(
+        min: 2,
+        max: 2,
+        minMessage: 'Вторым параметром укажите место в ряду',
+        maxMessage: 'Первый элемент - ряд, второй - место. Остальные параметры избыточны.'
+    )]
     #[ORM\Column(type: 'json')]
     private array $identifier = [];
 
     #[ORM\Column(type: 'boolean')]
     private bool $isVip;
 
-    #[ORM\ManyToOne(targetEntity: Hall::class, cascade:['persist'], inversedBy: 'seats')]
+    #[ORM\ManyToOne(targetEntity: Hall::class, cascade: ['persist'], inversedBy: 'seats')]
     private ?Hall $hall;
+
+    #[Assert\Callback]
+    public function validate(ExecutionContextInterface $context): void
+    {
+        $seatsForCurrentHall = array_map(fn(Seat $seat) => $this->getIdentifier(), $this->getHall()->getSeats()->toArray());
+
+//        if (in_array($this->getIdentifier(), $seatsForCurrentHall) && $this->getIdentifier()) {
+//            $context->buildViolation('Место с такими параметрами уже существует.')
+//                ->atPath('identifier')
+//                ->addViolation();
+//        }
+
+        $object = array_filter($this->getHall()->getSeats()->toArray(), fn(Seat $seat) => $this != $seat && in_array($seat->getIdentifier(), $seatsForCurrentHall));
+
+        if (count($object) > 0) {
+            $context->buildViolation('Место с такими параметрами уже существует.')
+                ->atPath('identifier')
+                ->addViolation();
+        }
+
+    }
 
     public function __construct()
     {
