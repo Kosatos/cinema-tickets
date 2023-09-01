@@ -21,9 +21,13 @@ class Hall
     #[ORM\OneToMany(mappedBy: 'hall', targetEntity: Session::class, cascade: ['persist', 'remove'])]
     private ?Collection $sessions;
 
+    #[ORM\OneToMany(mappedBy: 'hall', targetEntity: Seat::class, cascade: ['persist', 'remove'])]
+    private ?Collection $seats;
+
     public function __construct()
     {
         $this->sessions = new ArrayCollection();
+        $this->seats = new ArrayCollection();
     }
 
     public function __toString(): string
@@ -72,6 +76,36 @@ class Hall
             // set the owning side to null (unless already changed)
             if ($session->getHall() === $this) {
                 $session->setHall(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Seat>
+     */
+    public function getSeats(): Collection
+    {
+        return $this->seats;
+    }
+
+    public function addSeat(Seat $seat): self
+    {
+        if (!$this->seats->contains($seat)) {
+            $this->seats[] = $seat;
+            $seat->setHall($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeat(Seat $seat): self
+    {
+        if ($this->seats->removeElement($seat)) {
+            // set the owning side to null (unless already changed)
+            if ($seat->getHall() === $this) {
+                $seat->setHall(null);
             }
         }
 
