@@ -35,12 +35,6 @@ class Seat
     {
         $seatsForCurrentHall = array_map(fn(Seat $seat) => $this->getIdentifier(), $this->getHall()->getSeats()->toArray());
 
-//        if (in_array($this->getIdentifier(), $seatsForCurrentHall) && $this->getIdentifier()) {
-//            $context->buildViolation('Место с такими параметрами уже существует.')
-//                ->atPath('identifier')
-//                ->addViolation();
-//        }
-
         $object = array_filter($this->getHall()->getSeats()->toArray(), fn(Seat $seat) => $this != $seat && in_array($seat->getIdentifier(), $seatsForCurrentHall));
 
         if (count($object) > 0) {
@@ -48,7 +42,13 @@ class Seat
                 ->atPath('identifier')
                 ->addViolation();
         }
+    }
 
+    public function __toString(): string
+    {
+        $seat = $this->identifier;
+
+        return "Ряд - {$seat[0]}, место - {$seat[1]}.";
     }
 
     public function __construct()

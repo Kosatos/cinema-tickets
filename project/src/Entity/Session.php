@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\SessionRepository;
 use DateTime;
 use DateTimeImmutable;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use JetBrains\PhpStorm\ArrayShape;
@@ -36,6 +38,14 @@ class Session
 
     private ?string $schema = null;
     private bool $isForce = false;
+
+    #[ORM\OneToMany(mappedBy: 'session', targetEntity: Ticket::class, cascade: ['persist'])]
+    private ?Collection $tickets;
+
+    public function __construct()
+    {
+        $this->tickets = new ArrayCollection();
+    }
 
     #[Assert\Callback]
     public function validate(ExecutionContextInterface $context, mixed $payload): void
@@ -205,5 +215,35 @@ class Session
             $this->setHall(null);
             $this->setCinema(null);
         }
+    }
+
+    /**
+     * @return Collection<int, Ticket>
+     */
+    public function getTickets(): Collection
+    {
+        return $this->tickets;
+    }
+
+    public function addTicket(Ticket $ticket): self
+    {
+        if (!$this->tickets->contains($ticket)) {
+            $this->tickets[] = $ticket;
+            $ticket->setSession($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTicket(Ticket $ticket): self
+    {
+        if ($this->tickets->removeElement($ticket)) {
+            // set the owning side to null (unless already changed)
+            if ($ticket->getSession() === $this) {
+                $ticket->setSession(null);
+            }
+        }
+
+        return $this;
     }
 }

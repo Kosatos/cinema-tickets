@@ -8,6 +8,7 @@ use App\Entity\Country;
 use App\Entity\Hall;
 use App\Entity\Seat;
 use App\Entity\Session;
+use App\Entity\Ticket;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -56,5 +57,9 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Зал', 'fas fa-dungeon', Hall::class);
         yield MenuItem::linkToCrud('Место', 'fa-solid fa-chair', Seat::class);
         yield MenuItem::linkToCrud('Сеанс', 'fas fa-film', Session::class);
+
+        yield MenuItem::section('билеты');
+        yield MenuItem::linkToCrud('Сеанс', 'fas fa-ticket', Ticket::class);
+
     }
 }
