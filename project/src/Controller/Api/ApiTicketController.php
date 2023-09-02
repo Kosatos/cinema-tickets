@@ -7,6 +7,7 @@ use App\Entity\Session;
 use App\Entity\Ticket;
 use App\Repository\SeatRepository;
 use App\Repository\SessionRepository;
+use App\Service\QrCodeService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,7 @@ class ApiTicketController extends AbstractController
     public function createTicket(ManagerRegistry   $managerRegistry,
                                  Request           $request,
                                  SessionRepository $sessionRepository,
-                                 SeatRepository    $seatRepository): Response|NotFoundHttpException
+                                 SeatRepository    $seatRepository, QrCodeService $qrService): Response|NotFoundHttpException
     {
         /**@var Session $session */
         $session = $this->getEntityFromRequest('sessionId', $request, $sessionRepository);
@@ -38,7 +39,9 @@ class ApiTicketController extends AbstractController
             $em->persist($ticket);
             $em->flush();
 
-            return $this->render('ticket/new_ticket.html.twig', compact('ticket'));
+            $qrCode = $qrService->resolve('data', 'label');
+
+            return $this->render('ticket/new_ticket.html.twig', compact('ticket', 'qrCode'));
         }
 
         return $this->createNotFoundException();
