@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Cinema;
+use App\Entity\Seat;
 use App\Entity\Session;
 use App\Repository\CinemaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,17 +13,22 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CinemaController extends AbstractController
 {
-//    #[Route('/cinema', name: 'app_cinema')]
-//    public function index(CinemaRepository $cinemaRepository): Response
-//    {
-//        $films = $cinemaRepository->findAll();
-//
-//        return $this->render('cinema/index.html.twig', compact('films'));
-//    }
-
     #[Route('/session/{slug}', name: 'app_show_cinema')]
     public function showCinema(?Session $session): Response|NotFoundHttpException
     {
-        return $this->render('pages/session.html.twig', compact('session'));
+//        $seats = array_map(fn(Seat $seat) => [
+//            'seatId' => $seat->getId(),
+//            'identifier' => [
+//                'row' => $seat->getIdentifier()[0],
+//                'place' => $seat->getIdentifier()[1],
+//            ],
+//            'isVip' => $seat->isIsVip(),
+//            'hasTicket' => $seat->hasTicket($session, $seat),
+//        ], $session->getHall()->getSeats()->toArray());
+
+
+        $seats = $session->getHall()->getSeats();
+
+        return $this->render('pages/session.html.twig', compact('session', 'seats'));
     }
 }

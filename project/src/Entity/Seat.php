@@ -102,9 +102,8 @@ class Seat
         return $this;
     }
 
-    #TODO определить, есть-ли бронь на это место...
-     public function hasTicket(): bool
+     public function hasTicket(Session $session): bool
      {
-         return false;
+         return (bool)$session->getTickets()->filter(fn(Ticket $ticket) => $ticket->getSeat() === $this)->current();
      }
 }

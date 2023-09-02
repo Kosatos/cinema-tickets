@@ -1,0 +1,16 @@
+{# @var ticket \App\Entity\Ticket #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Билет{% endblock %}
+
+{% block body %}
+
+    <h1>Билет: {{ ticket.cinema }}</h1>
+    <ul>
+        <li>Код билета: {{ ticket.code }}</li>
+        <li>Место: {{ ticket.seat }}</li>
+        <li>Сеанс: {{ ticket.session }}</li>
+        <li>Зал: {{ ticket.hall }}</li>
+    </ul>
+
+{% endblock %}

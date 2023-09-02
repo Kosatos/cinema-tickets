@@ -1,9 +1,22 @@
 {# @var session \App\Entity\Session #}
+{# @var seat \App\Entity\Seat #}
 
 {% extends 'base.html.twig' %}
 
 {% block body %}
     {% if session is not null %}
+
+        {% for seat in seats %}
+            <ul>
+                <li>ID: {{ seat.id }}</li>
+                <li>VIP: {{ seat.isVip }}</li>
+                <li>есть бронь:{{ seat.hasTicket(session) }}</li>
+                <li>ряд: {{ seat.identifier[0] }}</li>
+                <li>место: {{ seat.identifier[1] }}</li>
+            </ul>
+            <hr>
+        {% endfor %}
+
         <section class="buying">
             <div class="buying__info">
                 <div class="buying__info-description">
