@@ -101,4 +101,10 @@ class Seat
 
         return $this;
     }
+
+    #TODO определить, есть-ли бронь на это место...
+     public function hasTicket(): bool
+     {
+         return false;
+     }
 }
