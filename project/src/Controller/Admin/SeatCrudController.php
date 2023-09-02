@@ -28,7 +28,7 @@ class SeatCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            ArrayField::new('identifier', '[ Ряд, Место ]')
+            ArrayField::new('identifier', 'Ряд и Место')
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
                 ->setHelp('Идентифицируйте место в формате: <p><strong style="color: #7c2d12">НОМЕР РЯДА, НОМЕР МЕСТА</strong></p>')

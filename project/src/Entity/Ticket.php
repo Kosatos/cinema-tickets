@@ -34,7 +34,7 @@ class Ticket
         $seat = $this->getSeat()->getIdentifier();
         $session = $this->getSession();
 
-        $code = $seat[0].$seat[1].$session->getHall().$session->getData()->format('Y-m-d H:i:s').$session->getCinema()->getName();
+        $code = $seat[0] . $seat[1] . $session->getHall() . $session->getData()->format('Y-m-d H:i:s') . $session->getCinema()->getName();
         $this->code = md5($code);
     }
 
@@ -72,5 +72,15 @@ class Ticket
         $this->code = $code;
 
         return $this;
+    }
+
+    public function getCinema(): string
+    {
+        return $this->getSession()->getCinema()?->getName() ?? 'фильм не найден';
+    }
+
+    public function getHall(): int
+    {
+        return $this->getSeat()->getHall()->getNumber();
     }
 }

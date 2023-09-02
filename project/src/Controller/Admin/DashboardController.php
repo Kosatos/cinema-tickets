@@ -59,7 +59,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Сеанс', 'fas fa-film', Session::class);
 
         yield MenuItem::section('билеты');
-        yield MenuItem::linkToCrud('Сеанс', 'fas fa-ticket', Ticket::class);
-
+        yield MenuItem::linkToCrud('Билеты', 'fas fa-ticket', Ticket::class);
     }
 }
