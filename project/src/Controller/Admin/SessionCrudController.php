@@ -27,7 +27,6 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class SessionCrudController extends AbstractCrudController
 {
-	use RepositoryTrait;
 	public static function getEntityFqcn(): string
 	{
 		return Session::class;

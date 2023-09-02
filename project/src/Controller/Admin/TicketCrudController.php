@@ -35,6 +35,7 @@ class TicketCrudController extends AbstractCrudController
             ,
             TextField::new('cinema', 'Фильм')
                 ->setTextAlign('center')
+                ->onlyOnIndex()
             ,
             AssociationField::new('seat', 'Место')
                 ->setTextAlign('center')
@@ -47,6 +48,7 @@ class TicketCrudController extends AbstractCrudController
             ,
             IntegerField::new('hall', 'Зал')
                 ->setTextAlign('center')
+                ->onlyOnIndex()
             ,
         ];
     }
