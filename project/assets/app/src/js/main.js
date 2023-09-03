@@ -1,16 +1,7 @@
 import axios from "axios";
-
 document.addEventListener('DOMContentLoaded', () => {
+    const bookingBtn = document.querySelector('.acceptin-button')
     document.addEventListener('click', (evt) => {
-        const chair = evt.target.closest('.buying-scheme__chair')
-        if (chair && !chair.classList.contains('buying-scheme__chair_taken')) {
-            if (!chair.classList.contains('buying-scheme__chair_selected')) {
-                chair.classList.add('buying-scheme__chair_selected')
-            } else {
-                chair.classList.remove('buying-scheme__chair_selected')
-            }
-        }
-
         const day = evt.target.closest('.page-nav__day')
         if (day && !day.classList.contains('page-nav__day_chosen')) {
             document.querySelector('.page-nav__day_chosen').classList.remove('page-nav__day_chosen')
@@ -19,10 +10,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
-            }).then(response => {
+            }).then(({ data }) => {
                 const wrapper = document.querySelector('.sessions-wrapper')
-                wrapper.innerHTML = response.data
+                wrapper.innerHTML = data
             }).catch(e => console.log(e))
         }
+
+        const chair = evt.target.closest('.buying-scheme__chair')
+        if (chair && !chair.classList.contains('buying-scheme__chair_taken')) {
+            // if (!chair.classList.contains('buying-scheme__chair_selected')) {
+            //     chair.classList.add('buying-scheme__chair_selected')
+            // } else {
+            //     chair.classList.remove('buying-scheme__chair_selected')
+            // }
+            const selected = document.querySelector('.buying-scheme__chair_selected:not(.buying-scheme__chair_legend)')
+            selected && selected.classList.remove('buying-scheme__chair_selected')
+            chair.classList.add('buying-scheme__chair_selected')
+            bookingBtn.dataset.seat = chair.dataset.seatId
+            bookingBtn.disabled = false
+        }
+    })
+
+    bookingBtn && bookingBtn.addEventListener('click', evt => {
+        axios.post('/api/ticket', {
+            sessionId: evt.currentTarget.dataset.session,
+            seatId: evt.currentTarget.dataset.seat
+        }).then(response => {
+            console.log('good')
+        })
     })
 })

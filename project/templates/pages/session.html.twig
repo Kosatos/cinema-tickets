@@ -5,20 +5,6 @@
 
 {% block body %}
     {% if session is not null %}
-
-        <h3>Количество рядов в зале: {{ session.hall.countRows }}</h3>
-
-        {% for seat in seats %}
-            <ul>
-                <li>ID: {{ seat.id }}</li>
-                <li>VIP: {{ seat.isVip }}</li>
-                <li>есть бронь:{{ seat.hasTicket(session) }}</li>
-                <li>ряд: {{ seat.identifier[0] }}</li>
-                <li>место: {{ seat.identifier[1] }}</li>
-            </ul>
-            <hr>
-        {% endfor %}
-
         <section class="buying">
             <div class="buying__info">
                 <div class="buying__info-description">
@@ -32,174 +18,56 @@
             </div>
             <div class="buying-scheme">
                 <div class="buying-scheme__wrapper">
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                    </div>
 
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_taken"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                    </div>
+                    {% for row in 1..session.hall.countRows %}
+                        <div class="buying-scheme__row">
+                            {% for seat in seats %}
+                                {% if seat.identifier[0] == row %}
+                                    {% if seat.hasTicket(session) %}
+                                        {% set className = 'buying-scheme__chair_taken' %}
+                                    {% else %}
+                                        {% if seat.isVip %}
+                                            {% set className = 'buying-scheme__chair_vip' %}
+                                        {% else %}
+                                            {% set className = 'buying-scheme__chair_standart' %}
+                                        {% endif %}
+                                    {% endif %}
+                                    <span class="buying-scheme__chair {{ className }}" data-seat-id="{{ seat.id }}"></span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
 
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                    </div>
+                    {#                    {% for seat in seats %} #}
+                    {#                        <ul> #}
+                    {#                            <li>ID: {{ seat.id }}</li> #}
+                    {#                            <li>VIP: {{ seat.isVip }}</li> #}
+                    {#                            <li>есть бронь:{{ seat.hasTicket(session) }}</li> #}
+                    {#                            <li>ряд: {{ seat.identifier[0] }}</li> #}
+                    {#                            <li>место: {{ seat.identifier[1] }}</li> #}
+                    {#                        </ul> #}
+                    {#                        <hr> #}
+                    {#                    {% endfor %} #}
 
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_vip"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_vip"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                    </div>
-
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_vip"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_vip"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_vip"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_vip"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                    </div>
-
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_vip"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_taken"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_taken"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_taken"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                    </div>
-
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_vip"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_taken"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_taken"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_vip"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                    </div>
-
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_disabled"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_disabled"></span>
-                    </div>
-
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_taken"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_taken"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_taken"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                    </div>
-
-                    <div class="buying-scheme__row">
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_taken"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_taken"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_taken"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                        <span class="buying-scheme__chair buying-scheme__chair_standart"></span><span
-                                class="buying-scheme__chair buying-scheme__chair_standart"></span>
-                    </div>
                 </div>
                 <div class="buying-scheme__legend">
                     <div class="col">
                         <p class="buying-scheme__legend-price"><span
-                                    class="buying-scheme__chair buying-scheme__chair_standart"></span> Свободно (<span
+                                    class="buying-scheme__chair buying-scheme__chair_standart buying-scheme__chair_legend"></span> Свободно (<span
                                     class="buying-scheme__legend-value">250</span>руб)</p>
                         <p class="buying-scheme__legend-price"><span
-                                    class="buying-scheme__chair buying-scheme__chair_vip"></span> Свободно VIP (<span
+                                    class="buying-scheme__chair buying-scheme__chair_vip buying-scheme__chair_legend"></span> Свободно VIP (<span
                                     class="buying-scheme__legend-value">350</span>руб)</p>
                     </div>
                     <div class="col">
                         <p class="buying-scheme__legend-price"><span
-                                    class="buying-scheme__chair buying-scheme__chair_taken"></span> Занято</p>
+                                    class="buying-scheme__chair buying-scheme__chair_taken buying-scheme__chair_legend"></span> Занято</p>
                         <p class="buying-scheme__legend-price"><span
-                                    class="buying-scheme__chair buying-scheme__chair_selected"></span> Выбрано</p>
+                                    class="buying-scheme__chair buying-scheme__chair_selected buying-scheme__chair_legend"></span> Выбрано</p>
                     </div>
                 </div>
             </div>
-            <button class="acceptin-button" onclick="location.href='payment.html'">Забронировать</button>
+            <button class="acceptin-button" data-session="{{ session.id }}" disabled>Забронировать</button>
         </section>
     {% else %}
         <div class="sessions-error">

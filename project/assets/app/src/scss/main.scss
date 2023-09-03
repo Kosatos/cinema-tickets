@@ -241,6 +241,10 @@ body {
       background-color: #006c6f;
     }
   }
+  &:disabled {
+    pointer-events: none;
+    background-color: #ababab;
+  }
 }
 
 .buying {
@@ -348,6 +352,7 @@ body {
 }
 
 .buying-scheme__chair_taken {
+  cursor: default;
   background-color: transparent;
 }
 
@@ -368,6 +373,10 @@ body {
         background-color: #25C4CE;
       }
     }
+  }
+  &_legend {
+    pointer-events: none;
+    cursor: default;
   }
 }
 

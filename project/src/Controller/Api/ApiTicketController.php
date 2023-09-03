@@ -25,11 +25,11 @@ class ApiTicketController extends AbstractController
                                  SeatRepository    $seatRepository,
                                  QrCodeService     $qrService): Response|NotFoundHttpException
     {
+        $requestContent = json_decode($request->getContent());
         /**@var Session $session */
-        $session = $this->getEntityFromRequest('sessionId', $request, $sessionRepository);
+        $session = $sessionRepository->find($requestContent['sessionId']);
         /**@var Seat $seat */
-        $seat = $this->getEntityFromRequest('seatId', $request, $seatRepository);
-
+        $seat = $seatRepository->find($requestContent['seatId']);
         if ($session && $seat && !$seat->hasTicket($session)) {
             $ticket = (new Ticket())
                 ->setSeat($seat)
