@@ -32,7 +32,7 @@ class Hall
 
     public function __toString(): string
     {
-     return "Зал #{$this->number}";
+        return "Зал #{$this->number}";
     }
 
     public function getId(): ?int
@@ -110,5 +110,17 @@ class Hall
         }
 
         return $this;
+    }
+
+    public function getCountRows(): int
+    {
+        $rowCount = 0;
+        array_map(function (Seat $seat) use (&$rowCount) {
+            if ($seat->getIdentifier()[0] > $rowCount) {
+                $rowCount = $seat->getIdentifier()[0];
+            }
+        }, $this->getSeats()->toArray());
+
+        return $rowCount;
     }
 }

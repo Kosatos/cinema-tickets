@@ -9,7 +9,6 @@ use Endroid\QrCode\Label\Alignment\LabelAlignmentCenter;
 use Endroid\QrCode\Label\Font\NotoSans;
 use Endroid\QrCode\RoundBlockSizeMode\RoundBlockSizeModeMargin;
 use Endroid\QrCode\Writer\PngWriter;
-use Endroid\QrCode\Writer\Result\PngResult;
 
 class QrCodeService
 {

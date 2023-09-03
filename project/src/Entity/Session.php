@@ -190,33 +190,6 @@ class Session
         return $this;
     }
 
-    #[ORM\PrePersist]
-    public function prePersist(LifecycleEventArgs $args): void
-    {
-        $em = $args->getObjectManager();
-
-        if ($schema = $this->schema) {
-            if (array_key_exists($schema, self::SESSION_SCHEMA)) {
-
-                array_map(function (string $time) use ($em) {
-                    $dataFormat = "{$this->data->format('Y-m-d')} $time";
-
-                    $session = new Session();
-                    $session->setCinema($this->cinema);
-                    $session->setHall($this->hall);
-                    $session->setData(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dataFormat));
-                    $session->setIsForce(true);
-
-                    $em->persist($session);
-                }, self::SESSION_SCHEMA[$schema]);
-            }
-
-            $this->setData(null);
-            $this->setHall(null);
-            $this->setCinema(null);
-        }
-    }
-
     /**
      * @return Collection<int, Ticket>
      */
@@ -245,5 +218,32 @@ class Session
         }
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(LifecycleEventArgs $args): void
+    {
+        $em = $args->getObjectManager();
+
+        if ($schema = $this->schema) {
+            if (array_key_exists($schema, self::SESSION_SCHEMA)) {
+
+                array_map(function (string $time) use ($em) {
+                    $dataFormat = "{$this->data->format('Y-m-d')} $time";
+
+                    $session = new Session();
+                    $session->setCinema($this->cinema);
+                    $session->setHall($this->hall);
+                    $session->setData(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dataFormat));
+                    $session->setIsForce(true);
+
+                    $em->persist($session);
+                }, self::SESSION_SCHEMA[$schema]);
+            }
+
+            $this->setData(null);
+            $this->setHall(null);
+            $this->setCinema(null);
+        }
     }
 }

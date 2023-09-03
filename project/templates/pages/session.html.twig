@@ -6,6 +6,8 @@
 {% block body %}
     {% if session is not null %}
 
+        <h3>Количество рядов в зале: {{ session.hall.countRows }}</h3>
+
         {% for seat in seats %}
             <ul>
                 <li>ID: {{ seat.id }}</li>
