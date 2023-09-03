@@ -29,7 +29,7 @@ class ApiTicketController extends AbstractController
         /**@var Seat $seat */
         $seat = $this->getEntityFromRequest('seatId', $request, $seatRepository);
 
-        if ($session && $seat && $seat->hasTicket($session)) {
+        if ($session && $seat && !$seat->hasTicket($session)) {
             $ticket = (new Ticket())
                 ->setSeat($seat)
                 ->setSession($session);
