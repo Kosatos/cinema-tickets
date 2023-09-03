@@ -2,12 +2,9 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Seat;
-use App\Entity\Session;
 use App\Entity\Ticket;
 use App\Repository\SeatRepository;
 use App\Repository\SessionRepository;
-use App\Service\QrCodeService;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,14 +19,15 @@ class ApiTicketController extends AbstractController
     public function createTicket(ManagerRegistry   $managerRegistry,
                                  Request           $request,
                                  SessionRepository $sessionRepository,
-                                 SeatRepository    $seatRepository,
-                                 QrCodeService     $qrService): Response|NotFoundHttpException
+                                 SeatRepository    $seatRepository): Response|NotFoundHttpException
     {
-        $requestContent = json_decode($request->getContent(), true);
-        /**@var Session $session */
+        if (!$requestContent = json_decode($request->getContent(), true)) {
+            return $this->json('данные не полные, либо повреждены', 404);
+        }
+
         $session = $sessionRepository->find($requestContent['sessionId']);
-        /**@var Seat $seat */
         $seat = $seatRepository->find($requestContent['seatId']);
+
         if ($session && $seat && !$seat->hasTicket($session)) {
             $ticket = (new Ticket())
                 ->setSeat($seat)
@@ -40,22 +38,18 @@ class ApiTicketController extends AbstractController
             $em->persist($ticket);
             $em->flush();
 
-            $qrCode = $qrService->resolve($ticket->getFullData());
-
-            return $this->render('ticket/new_ticket.html.twig', compact('ticket', 'qrCode'));
+            return $this->json([
+                'status' => 'success',
+                'code' => $ticket->getCode(),
+                'film' => $ticket->getCinema(),
+                'row' => $ticket->getSeat()->getIdentifier()[0],
+                'place' => $ticket->getSeat()->getIdentifier()[1],
+                'hall' => $ticket->getHall(),
+                'session' => $ticket->getSession()->getData()->format('Y-m-d H:i:s'),
+                'isVip' => $ticket->getSeat()->isIsVip(),
+            ]);
         }
 
-        return $this->createNotFoundException();
-    }
-
-    private function getEntityFromRequest(string $key, Request $request, $repository)
-    {
-        if ($id = $request->request->get($key)) {
-            if ($entity = $repository->find($id)) {
-                return $entity;
-            }
-        }
-
-        return null;
+        return $this->json(false, 400);
     }
 }
