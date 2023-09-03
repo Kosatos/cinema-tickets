@@ -1,3 +1,4 @@
+{# @var ticket \App\Entity\Ticket #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
@@ -9,11 +10,13 @@
             </header>
 
             <div class="ticket__info-wrapper">
-                <p class="ticket__info">На фильм: <span class="ticket__details ticket__title">Звёздные войны XXIII: Атака клонированных клонов</span></p>
-                <p class="ticket__info">Места: <span class="ticket__details ticket__chairs">6, 7</span></p>
-                <p class="ticket__info">В зале: <span class="ticket__details ticket__hall">1</span></p>
-                <p class="ticket__info">Начало сеанса: <span class="ticket__details ticket__start">18:30</span></p>
+                <p class="ticket__info">На фильм: <span class="ticket__details ticket__title">{{ ticket.cinema }}</span></p>
+                <p class="ticket__info">Места: <span class="ticket__details ticket__chairs">ряд: {{ ticket.seat.identifier[0] }}, место: {{ ticket.seat.identifier[1] }}</span></p>
+                <p class="ticket__info">В зале: <span class="ticket__details ticket__hall">{{ ticket.hall }}</span></p>
+                <p class="ticket__info">Начало сеанса: <span class="ticket__details ticket__start">{{ ticket.fullData }}</span></p>
                 <p class="ticket__info">Стоимость: <span class="ticket__details ticket__cost">600</span> рублей</p>
+
+                <a href="{{ path('app_ticket', { code: ticket.code }) }}">Ссылка на билет</a>
 
                 <button class="acceptin-button" onclick="location.href='ticket.html'" >Получить код бронирования</button>
 

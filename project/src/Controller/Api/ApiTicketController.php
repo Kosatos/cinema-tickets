@@ -38,16 +38,7 @@ class ApiTicketController extends AbstractController
             $em->persist($ticket);
             $em->flush();
 
-            return $this->json([
-                'status' => 'success',
-                'code' => $ticket->getCode(),
-                'film' => $ticket->getCinema(),
-                'row' => $ticket->getSeat()->getIdentifier()[0],
-                'place' => $ticket->getSeat()->getIdentifier()[1],
-                'hall' => $ticket->getHall(),
-                'session' => $ticket->getSession()->getData()->format('Y-m-d H:i:s'),
-                'isVip' => $ticket->getSeat()->isIsVip(),
-            ]);
+            return $this->render('pages/payment.html.twig', compact('ticket'));
         }
 
         return $this->json(false, 400);
