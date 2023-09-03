@@ -12,9 +12,8 @@ use Endroid\QrCode\Writer\PngWriter;
 
 class QrCodeService
 {
-    public function resolve(string $data, string $label)
+    public function resolve(string $data, string $label = 'ИДЁМ В КИНО'): string
     {
-        #TODO https://github.com/endroid/qr-code
         return Builder::create()
             ->writer(new PngWriter())
             ->writerOptions([])
@@ -22,15 +21,13 @@ class QrCodeService
             ->encoding(new Encoding('UTF-8'))
             ->errorCorrectionLevel(new ErrorCorrectionLevelHigh())
             ->size(300)
-            ->margin(10)
+            ->margin(15)
             ->roundBlockSizeMode(new RoundBlockSizeModeMargin())
-            ->logoPath(__DIR__ . '/assets/symfony.png')
-            ->logoResizeToWidth(50)
-            ->logoPunchoutBackground(true)
             ->labelText($label)
             ->labelFont(new NotoSans(20))
             ->labelAlignment(new LabelAlignmentCenter())
             ->validateResult(false)
-            ->build();
+            ->build()
+            ->getString();
     }
 }

@@ -13,4 +13,6 @@
         <li>Зал: {{ ticket.hall }}</li>
     </ul>
 
+    <img src="data:image/png;base64,{{ qrCode | base64 }}" alt="QR code">
+
 {% endblock %}

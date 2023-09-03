@@ -83,4 +83,9 @@ class Ticket
     {
         return $this->getSeat()->getHall()->getNumber();
     }
+
+    public function getFullData(): string
+    {
+        return "код: {$this->getCode()}, место: {$this->getSeat()->getIdentifier()[1]} ряд: {$this->getSeat()->getIdentifier()[0]} сеанс: {$this->getSession()->getData()->format('Y-m-d H:i:s')}";
+    }
 }

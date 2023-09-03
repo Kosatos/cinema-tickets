@@ -5,6 +5,7 @@ namespace App\Twig;
 use DateTimeImmutable;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+use Twig\TwigFilter;
 
 class TwigExtension extends AbstractExtension
 {
@@ -15,6 +16,18 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('currentWeekCollection', [$this, 'getCurrentWeek']),
             new TwigFunction('convertMinutes', [$this, 'getConvertMinutes']),
         ];
+    }
+
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('base64', [$this, 'twigBase64Filter']),
+        ];
+    }
+
+    function twigBase64Filter(string $source): string
+    {
+        return base64_encode($source);
     }
 
     public function convertToTime(string $time): string

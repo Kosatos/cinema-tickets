@@ -6,4 +6,7 @@
     <li>зал - {{ ticket.hall }}</li>
     <li>ряд - {{ ticket.seat.identifier[0] }}</li>
     <li>место - {{ ticket.seat.identifier[1] }}</li>
+
+    <img src="data:image/png;base64,{{ qrCode | base64 }}" alt="QR code">
+
 </ul>

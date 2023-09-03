@@ -22,7 +22,8 @@ class ApiTicketController extends AbstractController
     public function createTicket(ManagerRegistry   $managerRegistry,
                                  Request           $request,
                                  SessionRepository $sessionRepository,
-                                 SeatRepository    $seatRepository, QrCodeService $qrService): Response|NotFoundHttpException
+                                 SeatRepository    $seatRepository,
+                                 QrCodeService     $qrService): Response|NotFoundHttpException
     {
         /**@var Session $session */
         $session = $this->getEntityFromRequest('sessionId', $request, $sessionRepository);
@@ -39,7 +40,7 @@ class ApiTicketController extends AbstractController
             $em->persist($ticket);
             $em->flush();
 
-            $qrCode = $qrService->resolve('data', 'label');
+            $qrCode = $qrService->resolve($ticket->getFullData());
 
             return $this->render('ticket/new_ticket.html.twig', compact('ticket', 'qrCode'));
         }

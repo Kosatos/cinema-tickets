@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Ticket;
+use App\Service\QrCodeService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -10,14 +11,16 @@ use Symfony\Component\Routing\Annotation\Route;
 class TicketController extends AbstractController
 {
     #[Route('/ticket/{code}', name: 'app_ticket')]
-    public function showTicket(?Ticket $ticket): Response
+    public function showTicket(?Ticket $ticket, QrCodeService $qrService): Response
     {
         if ($ticket) {
+
             return $this->render('ticket/ticket.html.twig', [
                 'ticket' => $ticket,
+                'qrCode' => $qrService->resolve($ticket->getFullData()),
             ]);
         }
 
-        return new Response('Error, ticket not found',404);
+        return new Response('Error, ticket not found', 404);
     }
 }
