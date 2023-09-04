@@ -552,24 +552,31 @@ li {
   font-weight: 700;
   color: #fff;
   animation: fadeIn .4s ease forwards;
-  
-  .back-btn {
-    font-size: 14px;
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 15px;
-    border-radius: 3px;
-    border: none;
-    background-color: $green;
-    color: $white;
-    transition: background-color .4s ease;
-    cursor: pointer;
-    @media screen and (min-width: 1180px) {
-      &:hover {
-        background-color: #006c6f;
-      }
+}
+
+.back-btn {
+  display: block;
+  width: max-content;
+  margin: 0 auto;
+  font-size: 14px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 15px;
+  border-radius: 3px;
+  border: none;
+  background-color: $green;
+  color: $white;
+  transition: background-color .4s ease;
+  cursor: pointer;
+  @media screen and (min-width: 1180px) {
+    &:hover {
+      background-color: #006c6f;
     }
   }
+}
+
+.ticket + .back-btn {
+  margin-top: 50px;
 }
 
 .tickets-item:not(:first-child) {
