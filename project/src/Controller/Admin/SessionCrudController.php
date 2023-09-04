@@ -41,7 +41,8 @@ class SessionCrudController extends AbstractCrudController
 	{
 
 		return $actions
-			->remove('index', 'edit');
+//			->remove('index', 'edit')
+			;
 	}
 
 	public function configureCrud(Crud $crud): Crud
@@ -55,7 +56,7 @@ class SessionCrudController extends AbstractCrudController
 	public function configureFields(string $pageName): iterable
 	{
 		return [
-			DateField::new('data', 'Дата')
+			DateTimeField::new('data', 'Дата')
 				->setFormTypeOptions([
 					'input' => 'datetime_immutable',
 					'widget' => 'single_text',
@@ -89,18 +90,18 @@ class SessionCrudController extends AbstractCrudController
 				])
 				->setHelp('Выберите фильм из выпадающего списка.')
 			,
-			FormField::addRow(),
-			ChoiceField::new('schema', 'Схема сеансов')
-				->setChoices(Session::getAvailavleSchemaName())
-				->setColumns('col-sm-6 col-lg-5 col-xxl-3')
-				->setFormTypeOptions([
-					'constraints' => [
-						new NotBlank()
-					]
-				])
-				->onlyOnForms()
-				->setHelp('Выберете шаблон сеансов')
-			,
+//			FormField::addRow(),
+//			ChoiceField::new('schema', 'Схема сеансов')
+//				->setChoices(Session::getAvailavleSchemaName())
+//				->setColumns('col-sm-6 col-lg-5 col-xxl-3')
+//				->setFormTypeOptions([
+//					'constraints' => [
+//						new NotBlank()
+//					]
+//				])
+//				->onlyOnForms()
+//				->setHelp('Выберете шаблон сеансов')
+//			,
 			FormField::addRow(),
 			ArrayField::new('prices', 'Цена и VIP')
 				->setTextAlign('center')
