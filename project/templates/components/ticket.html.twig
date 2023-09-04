@@ -1,0 +1,24 @@
+<ul class="tickets-list">
+    {% for ticket in tickets %}
+        <li class="tickets-item">
+            <div class="ticket__check">
+                <h2 class="ticket__check-title">Электронный билет</h2>
+            </div>
+            <div class="ticket__info-wrapper">
+                <p class="ticket__info">На фильм: <span
+                            class="ticket__details ticket__title">{{ ticket[0].cinema }}</span>
+                </p>
+                <p class="ticket__info">Места: <span class="ticket__details ticket__chairs">{{ ticket[0].seat }}</span>
+                </p>
+                <p class="ticket__info">В зале: <span class="ticket__details ticket__hall">{{ ticket[0].hall }}</span>
+                </p>
+                <p class="ticket__info">Начало сеанса: <span class="ticket__details ticket__start">18:30</span></p>
+
+                <img class="ticket__info-qr" src="data:image/png;base64,{{ ticket[1] | base64 }}" alt="QR code">
+
+                <p class="ticket__hint">Покажите QR-код нашему контроллеру для подтверждения бронирования.</p>
+                <p class="ticket__hint">Приятного просмотра!</p>
+            </div>
+        </li>
+    {% endfor %}
+</ul>

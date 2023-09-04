@@ -38,17 +38,6 @@
                         </div>
                     {% endfor %}
 
-                    {#                    {% for seat in seats %} #}
-                    {#                        <ul> #}
-                    {#                            <li>ID: {{ seat.id }}</li> #}
-                    {#                            <li>VIP: {{ seat.isVip }}</li> #}
-                    {#                            <li>есть бронь:{{ seat.hasTicket(session) }}</li> #}
-                    {#                            <li>ряд: {{ seat.identifier[0] }}</li> #}
-                    {#                            <li>место: {{ seat.identifier[1] }}</li> #}
-                    {#                        </ul> #}
-                    {#                        <hr> #}
-                    {#                    {% endfor %} #}
-
                 </div>
                 <div class="buying-scheme__legend">
                     <div class="col">
@@ -67,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <button class="acceptin-button" data-session="{{ session.id }}" disabled>Забронировать</button>
+            <button class="acceptin-button booking-btn" data-session="{{ session.id }}" disabled>Забронировать</button>
         </section>
     {% else %}
         <div class="sessions-error">
