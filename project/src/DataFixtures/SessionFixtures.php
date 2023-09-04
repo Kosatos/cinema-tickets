@@ -38,6 +38,7 @@ class SessionFixtures extends BaseFixture implements DependentFixtureInterface
             $session->setData($data);
             $session->setCinema($cinema);
             $session->setHall($hall);
+	        $session->setPrices([30000, 50000]);
         });
 
         $manager->flush();

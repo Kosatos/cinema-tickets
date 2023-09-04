@@ -41,11 +41,11 @@ class ApiTicketController extends AbstractController
                         ->setSession($session);
 
                     $em->persist($ticket);
-                    $em->flush();
                     $tickets[] = [$ticket, $codeService->resolve($ticket->getFullData())];
                 }
             }, $seats);
 
+	        $em->flush();
 
             return $this->render('components/ticket.html.twig', compact('tickets'));
         }

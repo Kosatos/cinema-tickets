@@ -19,19 +19,27 @@
                     </span>
                 </p>
                 <p class="ticket__info">Места:
+                    {% set cost = 0 %}
                     {% for seat in seats %}
                         <span class="ticket__details ticket__chairs">{{ seat.identifier[1] }} (ряд: {{ seat.identifier[0] }}){% if loop.index != seats | length %}, {% endif %}</span>
+                        {% if seat.isVip %}
+                            {% set cost = cost + session.prices[1] %}
+                        {% else %}
+                            {% set cost = cost + session.prices[0] %}
+                        {% endif %}
                     {% endfor %}
                 </p>
                 <p class="ticket__info">В зале: <span
                             class="ticket__details ticket__hall">{{ session.hall.number }}</span></p>
                 <p class="ticket__info">Начало сеанса: <span
                             class="ticket__details ticket__start">{{ session.data | date('H:i') }}</span></p>
-                <p class="ticket__info">Стоимость: <span class="ticket__details ticket__cost">600</span> рублей</p>
 
-                {#                <a href="{{ path('app_ticket', { code: ticket.code }) }}">Ссылка на билет</a> #}
 
-                <button class="acceptin-button qr-btn" data-session="{{ app.request.get('sessionId') }}" data-seat="{{ app.request.get('seat') }}">Получить код бронирования</button>
+                <p class="ticket__info">Стоимость: <span class="ticket__details ticket__cost">{{ (cost / 100) | format_currency('RUB')  }}</span></p>
+
+                <button class="acceptin-button qr-btn" data-session="{{ app.request.get('sessionId') }}"
+                        data-seat="{{ app.request.get('seat') }}">Получить код бронирования
+                </button>
 
                 <p class="ticket__hint">После оплаты билет будет доступен в этом окне, а также придёт вам на почту.
                     Покажите QR-код нашему контроллёру у входа в зал.</p>

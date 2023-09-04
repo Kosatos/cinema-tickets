@@ -18,7 +18,7 @@ class Hall
     #[ORM\Column(type: 'integer')]
     private int $number;
 
-    #[ORM\OneToMany(mappedBy: 'hall', targetEntity: Session::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'hall', targetEntity: Session::class, cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     private ?Collection $sessions;
 
     #[ORM\OneToMany(mappedBy: 'hall', targetEntity: Seat::class, cascade: ['persist', 'remove'])]

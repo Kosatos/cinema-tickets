@@ -42,6 +42,15 @@ class Session
     #[ORM\OneToMany(mappedBy: 'session', targetEntity: Ticket::class, cascade: ['persist'])]
     private ?Collection $tickets;
 
+	#[Assert\Count(
+		min: 2,
+		max: 2,
+		minMessage: 'Вторым параметром укажите VIP цену',
+		maxMessage: 'Первый элемент - ряд, второй - место. Остальные параметры избыточны.'
+	)]
+	#[ORM\Column(type: 'json')]
+    private array $prices = [];
+
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
@@ -236,6 +245,7 @@ class Session
                     $session->setHall($this->hall);
                     $session->setData(DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $dataFormat));
                     $session->setIsForce(true);
+	                $session->setPrices($this->getPrices());
 
                     $em->persist($session);
                 }, self::SESSION_SCHEMA[$schema]);
@@ -245,5 +255,17 @@ class Session
             $this->setHall(null);
             $this->setCinema(null);
         }
+    }
+
+    public function getPrices(): ?array
+    {
+        return $this->prices;
+    }
+
+    public function setPrices(?array $prices): self
+    {
+        $this->prices = $prices;
+
+        return $this;
     }
 }
