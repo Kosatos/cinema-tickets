@@ -74,5 +74,17 @@ class SeatCrudController extends AbstractCrudController
 				->atPath('identifier')
 				->addViolation();
 		}
+
+		if (!is_numeric($identifier[0]) || !is_numeric($identifier[1])) {
+			$context->buildViolation('Поля должны содержать числовые значения!')
+				->atPath('identifier')
+				->addViolation();
+		}
+
+		if ($identifier[0] == 0 || $identifier[1] == 0) {
+			$context->buildViolation('Место не может принимать нулевые значения!')
+				->atPath('identifier')
+				->addViolation();
+		}
 	}
 }
