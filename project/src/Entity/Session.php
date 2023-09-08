@@ -62,7 +62,7 @@ class Session
 		if (!$this->isForce) {
 			$incorrectSession = array_filter(
 				$this->getHall()->getSessions()->toArray(),
-				fn(Session $session) => $session->getHall() === $this->getHall() && $session->getData()->format('Y-m-d H:i:s') === $this->getData()->format('Y-m-d H:i:s')
+				fn(Session $session) => $session->getHall() === $this->getHall() && $session->getData()->format('Y-m-d H:i:s') === $this->getData()->format('Y-m-d H:i:s') && $this !== $session
 			);
 
 			if (count($incorrectSession) > 0) {
