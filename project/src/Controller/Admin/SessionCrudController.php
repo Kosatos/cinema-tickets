@@ -40,8 +40,7 @@ class SessionCrudController extends AbstractCrudController
 	public function configureActions(Actions $actions): Actions
 	{
 
-		return $actions
-//			->remove('index', 'edit')
+		return $actions//			->remove('index', 'edit')
 			;
 	}
 
@@ -86,8 +85,13 @@ class SessionCrudController extends AbstractCrudController
 				->setFormTypeOptions([
 					'constraints' => [
 						new NotBlank()
-					]
+					],
 				])
+				->setQueryBuilder(fn(QueryBuilder $queryBuilder) => $queryBuilder
+					->leftJoin('entity.seats', 'seat')
+					->andWhere('seat.id > :seatId')
+					->setParameter('seatId', 0)
+					->orderBy('entity.number', 'ASC'))
 				->setHelp('Выберите фильм из выпадающего списка.')
 			,
 //			FormField::addRow(),
