@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\SlugField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use IntlDateFormatter;
 use function Symfony\Component\String\s;
 
@@ -30,7 +31,8 @@ class CinemaCrudController extends AbstractCrudController
             ->setEntityLabelInSingular(fn(?Cinema $cinema) => $cinema?->getName() ?: 'Фильм')
             ->setPageTitle(CRUD::PAGE_EDIT, fn(?Cinema $cinema) => "Редактировать фильм: {$cinema->getName()}")
             ->setPageTitle(CRUD::PAGE_NEW, "Фильм")
-            ->setDefaultSort(['id' => 'ASC']);
+            ->setDefaultSort(['id' => 'ASC'])
+            ->addFormTheme('@FOSCKEditor/Form/ckeditor_widget.html.twig');
     }
 
     public function configureFields(string $pageName): iterable
@@ -51,6 +53,7 @@ class CinemaCrudController extends AbstractCrudController
             ,
             FormField::addRow(),
             TextareaField::new('description', 'Описание')
+                ->setFormType(CKEditorType::class)
                 ->setTextAlign('center')
                 ->setColumns('col-sm-6 col-lg-5 col-xxl-3')
             ,
@@ -77,7 +80,7 @@ class CinemaCrudController extends AbstractCrudController
                     'error_bubbling' => false,
                 ])
                 ->renderExpanded()
-            ->setTemplatePath('admin/crud/assoc_gallery.html.twig')
+                ->setTemplatePath('admin/crud/assoc_gallery.html.twig')
         ];
     }
 }
